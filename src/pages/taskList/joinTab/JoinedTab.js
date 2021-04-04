@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import actions from '../../../redux/action';
 import GlobalStyle from '../../../res/style/GlobalStyle';
 import ListItem from '../../../components/ListItem';
+import TaskItem from "../../../components/TaskView/TaskItem";
 import NavigationUtil from '../../../utils/NavigationUtil';
 
 const THEME_COLOR = 'red';
@@ -26,7 +27,7 @@ class JoinedTab extends React.Component{
     renderItem(data){
         const item = data.item;
         return(
-            <ListItem
+            <TaskItem
                 item={item}
             />
         )
