@@ -42,6 +42,10 @@ class Index extends Component {
         key: "WeChat",
         value: "微信",
       },
+      {
+        key:'logout',
+        value: '退出登录',
+      }
     ],
   };
 
