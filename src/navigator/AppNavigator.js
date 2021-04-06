@@ -52,7 +52,7 @@ const MainNavigator = createStackNavigator(
 
 export default createAppContainer(createSwitchNavigator(
     {
-        Init: LoginNavigator,
+        // Init: LoginNavigator,
         Main: MainNavigator,
     },
     {

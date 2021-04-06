@@ -3,6 +3,8 @@
           package="com.suxunapp">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
     <application
             android:name=".MainApplication"
@@ -28,6 +30,9 @@
         <meta-data android:name="JPUSH_CHANNEL" android:value="${APP_CHANNEL}"/>
         <meta-data android:name="JPUSH_APPKEY" android:value="${JPUSH_APPKEY}"/>
         <!-- 极光的配置 -->
+        <!-- 高德地图API配置 -->
+        <meta-data android:name="com.amap.api.v2.apikey" android:value="19ec34492cef2d96dc1b6dbfaba6cbab"/>
+        <!-- 高德地图API配置 -->
     </application>
 
 </manifest>
