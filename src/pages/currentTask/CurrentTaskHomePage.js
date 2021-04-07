@@ -143,7 +143,7 @@ class CurrentTaskHomePage extends React.Component {
             if(latitude !==0 && longitude !== 0){
                 coordinates.push({latitude, longitude});
             }
-            console.log(location);
+            // console.log(location);
             return {location, coordinates};
         })
 
@@ -191,17 +191,17 @@ class CurrentTaskHomePage extends React.Component {
                     </MapView>
                 </View>
                 <View style={styles.bottomNavigator}>
-                    <Icon iconName="chatbubbles" labelName="对话" style={{color: "#eafff2"}} textStyle={{color: "#eafff2"}} onPress={()=>{
+                    <Icon iconName="chatbubbles" labelName="对话" style={{color: "#00e0c7",}} textStyle={{color: "#00e0c7"}} onPress={()=>{
                         navigation.navigate("MessagePage");
                     }}
                     />
-                    <Icon iconName="md-newspaper" labelName="详情" style={{color: "#eafff2"}} textStyle={{color: "#eafff2"}} onPress={()=>{
+                    <Icon iconName="md-newspaper" labelName="详情" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={()=>{
                         navigation.navigate("MainDetailPage", {data: this.props.detailItem});
                     }}/>
-                    <Icon iconName="alert" labelName="线索" style={{color: "#eafff2"}} textStyle={{color: "#eafff2"}} onPress={() => {
+                    <Icon iconName="alert" labelName="线索" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
                         navigation.navigate("CluePage");
                     }}/>
-                    <Icon iconName="md-megaphone" labelName="指令" style={{color: "#eafff2"}} textStyle={{color: "#eafff2"}} onPress={() => {
+                    <Icon iconName="md-megaphone" labelName="指令" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
                         navigation.navigate("OrderPage");
                     }}/>
                 </View>
@@ -237,7 +237,8 @@ const styles = StyleSheet.create({
         height: 50,
         paddingTop: 5,
         borderRadius: 25,
-        backgroundColor: "#17e6a1",
+        backgroundColor: "#fff",
+        elevation: 4,
     },
     mapContainer:{
         flex: 1,

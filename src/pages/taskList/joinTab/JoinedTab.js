@@ -6,6 +6,7 @@ import GlobalStyle from '../../../res/style/GlobalStyle';
 import ListItem from '../../../components/ListItem';
 import TaskItem from "../../../components/TaskView/TaskItem";
 import NavigationUtil from '../../../utils/NavigationUtil';
+import LinearGradient from "react-native-linear-gradient";
 
 const THEME_COLOR = 'red';
 class JoinedTab extends React.Component{
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: "#F5FCFF",
     },
     welcome:{
         fontSize: 20,
@@ -90,6 +90,6 @@ const styles = StyleSheet.create({
     list:{
         flex: 1,
         width: "100%",
-        backgroundColor: GlobalStyle.itemBaseColor
+        backgroundColor: "#00e0c7"
     }
 });

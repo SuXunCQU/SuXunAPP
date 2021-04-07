@@ -5,11 +5,14 @@ import TaskListPage from '../pages/taskList/TaskListPage';
 import CurrentTaskPage from '../pages/currentTask/CurrentTaskPage';
 import UserCenterPage from '../pages/personal/UserCenterPage';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Entypo from 'react-native-vector-icons/Entypo'
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
-import { Text, LogBox } from 'react-native';
+import { Text, LogBox, Dimensions } from 'react-native';
 import {connect} from 'react-redux';
+import GlobalStyle from '../res/style/GlobalStyle';
 
+const {scale} = Dimensions.get("window");
 const TABS = { // 在这里配置页面的路由
     TaskListPage:{
         screen: TaskListPage,
@@ -18,8 +21,8 @@ const TABS = { // 在这里配置页面的路由
                 <Text style={{color: focused ? tintColor: "grey", fontSize: 12, alignSelf: "center"}}>任务列表</Text>
             ),
             tabBarIcon:({tintColor, focused}) => (
-                <Ionicons
-                    name={focused ? 'list-circle' : 'list-circle-outline'}
+                <Entypo
+                    name={'add-to-list'}
                     size={26}
                     style={{color: focused ? tintColor: "grey"}}
                 />
@@ -33,8 +36,8 @@ const TABS = { // 在这里配置页面的路由
                 <Text style={{color: focused ? tintColor: "grey", fontSize: 12, alignSelf: "center"}}>当前任务</Text>
             ),
             tabBarIcon:({tintColor, focused}) => (
-                <Ionicons
-                    name={focused ? 'map-sharp' : 'map-outline'}
+                <Entypo
+                    name={'location'}
                     size={26}
                     style={{color: focused ? tintColor: "grey"}}
                 />
@@ -95,6 +98,10 @@ class TabBarComponent extends React.Component {
             {...this.props}
             activeTintColor={this.props.theme}
             style={{
+                borderTopLeftRadius: 15,
+                borderTopRightRadius: 15,
+                borderLeftWidth: 1 / scale,
+                borderRightWidth: 1 / scale,
                 backgroundColor: "#FEFEFE",
             }}
         />;

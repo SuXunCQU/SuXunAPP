@@ -7,7 +7,6 @@ export default class Icon extends React.Component {
     static propTypes = {
         iconName: PropTypes.string,
         labelName: PropTypes.string,
-        style: ViewPropTypes.style,
     }
 
     static defaultProps = {
@@ -19,7 +18,7 @@ export default class Icon extends React.Component {
         return(
             <TouchableOpacity onPress={this.props.onPress? this.props.onPress : null}>
                 <View style={{alignItem: 'center'}}>
-                    <Ionicons 
+                    <Ionicons
                         name={this.props.iconName}
                         size={26}
                         style={[this.props.style, {alignSelf: "center"}]}

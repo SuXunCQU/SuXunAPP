@@ -18,7 +18,7 @@ class CurrentTaskPage extends React.Component{
                 CurrentTaskHomePage: {
                     screen: CurrentTaskHomePage,
                     navigationOptions:{
-                        title: "当前任务",
+                        title: `当前任务：搜寻${this.props.detailItem && this.props.detailItem.lost_name}`,
                         headerStyle: GlobalStyle.headerStyle,
                         headerTitleStyle: GlobalStyle.headerTitleStyle,
                     }
@@ -64,4 +64,8 @@ const mapDispatchToProps = (dispatch) => ({
     onThemeChange: (theme) => dispatch(actions.onThemeChange(theme))
 });
 
-export default connect(null, mapDispatchToProps)(CurrentTaskPage);
+const mapStateToProps = (state) => ({
+    detailItem: state.taskItem.detailItem,
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentTaskPage);
