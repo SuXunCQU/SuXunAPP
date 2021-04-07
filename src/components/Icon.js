@@ -24,7 +24,7 @@ export default class Icon extends React.Component {
                         size={26}
                         style={[this.props.style, {alignSelf: "center"}]}
                     />
-                    <Text style={{fontSize: 12, textAlign: 'center'}}>{this.props.labelName}</Text>
+                    <Text style={[{fontSize: 12, textAlign: 'center'}, this.props.textStyle]}>{this.props.labelName}</Text>
                 </View>
             </TouchableOpacity>
         )

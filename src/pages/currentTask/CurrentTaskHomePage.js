@@ -6,7 +6,8 @@ import Icon from '../../components/Icon';
 import CluePage from './tabs/CluePage';
 import NavigationUtil from '../../utils/NavigationUtil';
 import {connect} from 'react-redux';
-import GlobalStyle from "../../res/style/GlobalStyle";
+// import GlobalStyle from "../../res/style/GlobalStyle";
+import {Color} from '../../utils/GlobalStyle';
 
 const {width, height, scale} = Dimensions.get("window");
 class CurrentTaskHomePage extends React.Component {
@@ -18,6 +19,7 @@ class CurrentTaskHomePage extends React.Component {
         super(props);
         this.state = {
             location: null,
+            coordinates: [],
             lines : [
                 {
                     "position": [
@@ -73,45 +75,46 @@ class CurrentTaskHomePage extends React.Component {
             PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
         ]);
 
-        await RNLocation.configure({
-            distanceFilter: 5.0
-        })
-
-        await RNLocation.requestPermission({
-            ios: "whenInUse",
-            android: {
-                detail: "coarse"
-            }
-        }).then(granted => {
-            if (granted) {
-                this.locationSubscription = RNLocation.subscribeToLocationUpdates((locations) => {
-                    /* Example location returned
-                    {
-                      speed: -1,
-                      longitude: -0.1337,
-                      latitude: 51.50998,
-                      accuracy: 5,
-                      heading: -1,
-                      altitude: 0,
-                      altitudeAccuracy: -1
-                      floor: 0
-                      timestamp: 1446007304457.029,
-                      fromMockProvider: false
-                    }
-                    */
-                    this.location
-                    console.log(locations)
-                })
-                console.log("订阅成功");
-            }
-        })
+        // await RNLocation.configure({
+        //     distanceFilter: 5.0
+        // })
+        //
+        // await RNLocation.requestPermission({
+        //     ios: "whenInUse",
+        //     android: {
+        //         detail: "coarse"
+        //     }
+        // }).then(granted => {
+        //     if (granted) {
+        //         this.locationSubscription = RNLocation.subscribeToLocationUpdates((locations) => {
+        //             /* Example location returned
+        //             {
+        //               speed: -1,
+        //               longitude: -0.1337,
+        //               latitude: 51.50998,
+        //               accuracy: 5,
+        //               heading: -1,
+        //               altitude: 0,
+        //               altitudeAccuracy: -1
+        //               floor: 0
+        //               timestamp: 1446007304457.029,
+        //               fromMockProvider: false
+        //             }
+        //             */
+        //             console.log(locations)
+        //         })
+        //         console.log("订阅成功");
+        //     }
+        // })
 
         console.log("组件已挂载")
     }
 
-
-
     _onPress = () => {
+
+    }
+
+    _onPressAddCoordinate = () => {
         this.setState((prevState) => {
             let lines = JSON.parse(
                 JSON.stringify(prevState.lines)
@@ -129,7 +132,20 @@ class CurrentTaskHomePage extends React.Component {
             }
             return {lines};
         })
+    }
 
+    _onLocation = (location) => {
+        const {latitude, longitude} = location;
+        this.setState((prevState) => {
+            let coordinates = JSON.parse(
+                JSON.stringify(prevState.coordinates)
+            )
+            if(latitude !==0 && longitude !== 0){
+                coordinates.push({latitude, longitude});
+            }
+            console.log(location);
+            return {location, coordinates};
+        })
 
     }
 
@@ -140,12 +156,21 @@ class CurrentTaskHomePage extends React.Component {
                 {/*地图*/}
                 <View style={styles.mapContainer}>
                     <MapView
+                        locationEnabled
                         center={{
-                            latitude: 39.91095,
-                            longitude: 116.37296
+                            latitude: this.state.location && this.state.location.latitude || 39.91095,
+                            longitude: this.state.location && this.state.location.longitude || 116.37296
                         }}
                         style={styles.mapContainer}
+                        onLocation={this._onLocation}
                     >
+                        {this.state.location ?
+                        <MapView.Polyline
+                            gradient
+                            width={3}
+                            colors={['#f44336', '#2196f3', '#4caf50']}
+                            coordinates={this.state.coordinates}
+                        /> : null}
                         <MapView.Polyline
                             width={5}
                             color="rgba(255, 0, 0, 0.5)"
@@ -164,20 +189,19 @@ class CurrentTaskHomePage extends React.Component {
                             coordinates={this.state.lines[2].position}
                         />
                     </MapView>
-                    <Button title={"增加坐标"} onPress={this._onPress}/>
                 </View>
                 <View style={styles.bottomNavigator}>
-                    <Icon iconName="chatbubbles" labelName="对话" onPress={()=>{
+                    <Icon iconName="chatbubbles" labelName="对话" style={{color: "#eafff2"}} textStyle={{color: "#eafff2"}} onPress={()=>{
                         navigation.navigate("MessagePage");
                     }}
                     />
-                    <Icon iconName="md-newspaper" labelName="详情" onPress={()=>{
+                    <Icon iconName="md-newspaper" labelName="详情" style={{color: "#eafff2"}} textStyle={{color: "#eafff2"}} onPress={()=>{
                         navigation.navigate("MainDetailPage", {data: this.props.detailItem});
                     }}/>
-                    <Icon iconName="alert" labelName="线索" onPress={() => {
+                    <Icon iconName="alert" labelName="线索" style={{color: "#eafff2"}} textStyle={{color: "#eafff2"}} onPress={() => {
                         navigation.navigate("CluePage");
                     }}/>
-                    <Icon iconName="md-megaphone" labelName="指令" onPress={() => {
+                    <Icon iconName="md-megaphone" labelName="指令" style={{color: "#eafff2"}} textStyle={{color: "#eafff2"}} onPress={() => {
                         navigation.navigate("OrderPage");
                     }}/>
                 </View>
@@ -197,6 +221,7 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         alignItems: "center",
         backgroundColor: "#F5FCFF",
+        borderBottomColor: "pink",
     },
     welcome:{
         fontSize: 20,
@@ -204,17 +229,23 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     bottomNavigator:{
+        position: "absolute",
+        bottom: 15,
         flexDirection: 'row',
         justifyContent: 'space-around',
-        width,
+        width: 0.9 * width,
         height: 50,
-        backgroundColor: GlobalStyle.baseColor,
         paddingTop: 5,
-        borderTopWidth: 1 / scale,
-        borderColor: "#e8e8e8",
+        borderRadius: 25,
+        backgroundColor: "#17e6a1",
     },
     mapContainer:{
         flex: 1,
         width: "100%",
+    },
+    buttonContainer:{
+        width,
+        flexDirection: "row",
+        justifyContent: "space-around",
     }
 });
