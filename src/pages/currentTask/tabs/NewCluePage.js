@@ -7,12 +7,31 @@ import NavigationUtil from "../../../utils/NavigationUtil";
 import ViewUtil from '../../../utils/ViewUtil';
 import Feather from 'react-native-vector-icons/Feather';
 
+const options = {
+  title: '从相册选择或拍摄',
+  chooseFromLibraryButtonTitle: '从相册选择',
+  takePhotoButtonTitle: '拍摄',
+  cancelButtonTitle: '取消',
+  includeBase64: true,
+  storageOptions: {
+    skipBackup: true,
+  },
+};
+
 const {width, height, scale} = Dimensions.get("window");
 export default class NewCluePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      imageUrls: [],
+      /* {
+          base64 = response.base64;
+          fileURI = response.uri;
+          fileName = response.fileName || 'cash.jpg';
+          fileType = response.type;
+      } */
+      imageObjs: [
+
+      ]
     };
   }
 
@@ -60,9 +79,31 @@ export default class NewCluePage extends Component {
           </TextInputLayout>
         </View>
         <View style={styles.imageContainer}>
-          <TouchableOpacity onPress={() => launchImageLibrary({mediaType: 'photo'}, (response) => {
-            console.log(response);
-          })}>
+          <TouchableOpacity onPress={() => launchImageLibrary(options, (response) => {
+                if (!response.error) {
+                  if (response.didCancel) {
+                    return;
+                  }
+                  // console.log(response);
+                  const source = {uri: response.uri};
+                  this.setState((prevState) => {
+                    let imageObjs = prevState.imageObjs;
+                    imageObjs.push({
+                      base64: response.base64,
+                      fileURI: response.uri,
+                      fileName: response.fileName || 'cash.jpg',
+                      fileType: response.type,
+                    });
+                    return {imageObjs: imageObjs}
+                  }, () => {
+                    console.log(this.state.imageObjs);
+                  })
+                  this.setState({
+                    uploadImage: source,
+                    showUploadIcon: false,
+                  })
+                }
+              })}>
             <View style={styles.textContainer}>
               <Feather name={"image"} style={{fontSize: 80}}/>
             </View>
