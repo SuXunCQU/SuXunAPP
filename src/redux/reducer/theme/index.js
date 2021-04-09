@@ -2,7 +2,7 @@ import Types from '../../action/types'
 import GlobalStyle from '../../../res/style/GlobalStyle';
 
 const defaultState = {
-    color: GlobalStyle.iconColor
+    color: "#00e0c7"
 };
 
 export default function onAction(state=defaultState, action){

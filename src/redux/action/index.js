@@ -2,6 +2,7 @@ import {onThemeChange} from './theme';
 import {onLoadJoinedListData} from './joinedList';
 import {onMainTaskChange, onMainTaskDetailChange} from './taskitem';
 import {setUsername, setPassword, setToken} from "./user";
+import {onAddNewCoordinate} from "./map";
 
 export default {
     onThemeChange,
@@ -11,4 +12,5 @@ export default {
     setUsername,
     setPassword,
     setToken,
+    onAddNewCoordinate,
 };

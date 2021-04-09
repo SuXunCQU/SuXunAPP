@@ -1,8 +1,8 @@
 import React from 'react';
 import GlobalStyle from '../../res/style/GlobalStyle';
-import { createStackNavigator } from 'react-navigation-stack';
-import { createAppContainer } from 'react-navigation';
-import { connect } from 'react-redux';
+import {createStackNavigator} from 'react-navigation-stack';
+import {createAppContainer} from 'react-navigation';
+import {connect} from 'react-redux';
 import actions from '../../redux/action';
 import CluePage from './tabs/CluePage';
 import CurrentTaskHomePage from './CurrentTaskHomePage';
@@ -10,58 +10,74 @@ import NewCluePage from './tabs/NewCluePage';
 import OrderPage from "./tabs/OrderPage";
 import MainDetailPage from '../../components/ItemDetailPage';
 import ChatPage from './tabs/message/chat';
+import {Dimensions, StyleSheet, View} from "react-native";
 
-class CurrentTaskPage extends React.Component{
-    render(){
+const {width, height, scale} = Dimensions.get("window");
+
+class CurrentTaskPage extends React.Component {
+    render() {
         const StackNavigator = createAppContainer(createStackNavigator(
             {
                 CurrentTaskHomePage: {
                     screen: CurrentTaskHomePage,
-                    navigationOptions:{
-                        title: "当前任务",
+                    navigationOptions: {
+                        title: `当前任务：搜寻${this.props.detailItem && this.props.detailItem.lost_name}`,
                         headerStyle: GlobalStyle.headerStyle,
                         headerTitleStyle: GlobalStyle.headerTitleStyle,
                     }
                 },
                 CluePage: {
                     screen: CluePage,
-                    navigationOptions:{
+                    navigationOptions: {
                         headerShown: false,
                     }
                 },
-                NewCluePage:{
+                NewCluePage: {
                     screen: NewCluePage,
-                    navigationOptions:{
+                    navigationOptions: {
                         headerShown: false,
                     }
                 },
-                OrderPage:{
+                OrderPage: {
                     screen: OrderPage,
-                    navigationOptions:{
+                    navigationOptions: {
                         headerShown: false,
                     }
                 },
-                MainDetailPage:{
+                MainDetailPage: {
                     screen: MainDetailPage,
-                    navigationOptions:{
+                    navigationOptions: {
                         headerShown: false,
                     }
                 },
-                MessagePage:{
-                    screen:ChatPage,
-                    navigationOptions:{
+                MessagePage: {
+                    screen: ChatPage,
+                    navigationOptions: {
                         headerShown: false,
                     }
                 }
 
             }
         ));
-        return <StackNavigator/>
+        return (
+            <View style={styles.container}>
+                <StackNavigator/>
+            </View>
+        )
     }
 };
 
 const mapDispatchToProps = (dispatch) => ({
     onThemeChange: (theme) => dispatch(actions.onThemeChange(theme))
 });
+const mapStateToProps = (state) => ({
+    detailItem: state.taskItem.detailItem,
+})
+export default connect(mapStateToProps, mapDispatchToProps)(CurrentTaskPage);
 
-export default connect(null, mapDispatchToProps)(CurrentTaskPage);
+const styles = StyleSheet.create({
+    container: {
+        height,
+        paddingBottom: 70,
+    },
+})
