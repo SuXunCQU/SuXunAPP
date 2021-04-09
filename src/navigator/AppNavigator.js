@@ -7,6 +7,10 @@ import WelcomePage from "../pages/WelcomePage";
 import FetchDemoPage from '../pages/demo/FetchDemoPage';
 import AsyncStorageDemoPage from '../pages/demo/AsyncStorageDemoPage';
 import DataStoreDemoPage from '../pages/demo/DataStoreDemoPage';
+import ChatPage from '../pages/currentTask/tabs/message/chat';
+import ProfilePage from '../pages/personal/profile'
+import SettingPage from "../pages/personal/setting";
+import UpdatePage from "../pages/personal/update";
 
 const InitNavigator = createStackNavigator(
     {
@@ -23,6 +27,40 @@ const LoginNavigator = createStackNavigator(
     {
         LoginPage:{
             screen: LoginPage,
+            navigationOptions:{
+                headerShown:false,
+            }
+        }
+    }
+)
+
+const ChatNavigator = createStackNavigator(
+    {
+        ChatPage:{
+            screen: ChatPage,
+            navigationOptions:{
+                headerShown:false,
+            }
+        }
+    }
+)
+
+const ProfileNavigator = createStackNavigator(
+    {
+        ProfilePage:{
+            screen: ProfilePage,
+            navigationOptions:{
+                headerShown:false,
+            }
+        },
+        SettingPage:{
+            screen: SettingPage,
+            navigationOptions:{
+                headerShown:false,
+            }
+        },
+        UpdatePage:{
+            screen:UpdatePage,
             navigationOptions:{
                 headerShown:false,
             }
@@ -52,7 +90,7 @@ const MainNavigator = createStackNavigator(
 
 export default createAppContainer(createSwitchNavigator(
     {
-        Init: LoginNavigator,
+        Init: ChatNavigator,
         Main: MainNavigator,
     },
     {
