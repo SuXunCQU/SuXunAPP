@@ -8,11 +8,10 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo'
 import { createBottomTabNavigator, BottomTabBar } from 'react-navigation-tabs';
 import { createAppContainer } from 'react-navigation';
-import { Text, LogBox, Dimensions } from 'react-native';
+import {Text, LogBox, Dimensions, View} from 'react-native';
 import {connect} from 'react-redux';
-import GlobalStyle from '../res/style/GlobalStyle';
 
-const {scale} = Dimensions.get("window");
+const {width, height, scale} = Dimensions.get("window");
 const TABS = { // 在这里配置页面的路由
     TaskListPage:{
         screen: TaskListPage,
@@ -26,7 +25,7 @@ const TABS = { // 在这里配置页面的路由
                     size={26}
                     style={{color: focused ? tintColor: "grey"}}
                 />
-            )
+            ),
         }
     },
     CurrentTaskPage:{
@@ -77,7 +76,8 @@ class DynamicTabNavigator extends React.Component {
         const tabs = {TaskListPage, CurrentTaskPage, UserCenterPage};
         TaskListPage.navigationOptions.tabBarLabel = "任务列表"; // 动态修改Tab属性
         return this.Tabs = createAppContainer(createBottomTabNavigator(
-            tabs,{
+            tabs,
+            {
                 tabBarComponent: (props) => {
                     return <TabBarComponent {...props} theme={this.props.theme}  />
                 },
@@ -94,7 +94,7 @@ class DynamicTabNavigator extends React.Component {
 
 class TabBarComponent extends React.Component {
     render(){
-        return <BottomTabBar
+        return (<BottomTabBar
             {...this.props}
             activeTintColor={this.props.theme}
             style={{
@@ -102,9 +102,11 @@ class TabBarComponent extends React.Component {
                 borderTopRightRadius: 15,
                 borderLeftWidth: 1 / scale,
                 borderRightWidth: 1 / scale,
-                backgroundColor: "#FEFEFE",
+                borderColor: "#555",
+                backgroundColor: "#fefefe",
+                position: "absolute",
             }}
-        />;
+        />)
     }
 }
 

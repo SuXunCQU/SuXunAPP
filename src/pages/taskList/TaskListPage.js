@@ -5,11 +5,9 @@ import { createAppContainer } from 'react-navigation';
 import JoinedTabPage from './joinTab/JoinedTab';
 import RecruitTab from './recruitTab/RecruitTab';
 import { createStackNavigator } from 'react-navigation-stack';
-import GlobalStyle from '../../res/style/GlobalStyle';
 import ItemDetailPage from '../../components/ItemDetailPage';
-import {connect} from 'react-redux';
 
-const {width} = Dimensions.get("window");
+const {width, height, scale} = Dimensions.get("window");
 const MARGIN_HORIZONTAL = width * 0.2 / 4;
 export default class TaskListPage extends React.Component{
     constructor(props) {
@@ -91,6 +89,6 @@ export default class TaskListPage extends React.Component{
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        height,
     },
 })

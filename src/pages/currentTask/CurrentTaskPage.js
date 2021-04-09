@@ -10,7 +10,9 @@ import NewCluePage from './tabs/NewCluePage';
 import OrderPage from "./tabs/OrderPage";
 import MainDetailPage from '../../components/ItemDetailPage';
 import ChatPage from './tabs/message/chat';
+import {StyleSheet, View, Dimensions} from "react-native";
 
+const {width, height, scale} = Dimensions.get("window");
 class CurrentTaskPage extends React.Component{
     render(){
         const StackNavigator = createAppContainer(createStackNavigator(
@@ -56,16 +58,25 @@ class CurrentTaskPage extends React.Component{
 
             }
         ));
-        return <StackNavigator/>
+        return (
+            <View style={styles.container}>
+                <StackNavigator />
+            </View>
+        )
     }
 };
 
 const mapDispatchToProps = (dispatch) => ({
     onThemeChange: (theme) => dispatch(actions.onThemeChange(theme))
 });
-
 const mapStateToProps = (state) => ({
     detailItem: state.taskItem.detailItem,
 })
-
 export default connect(mapStateToProps, mapDispatchToProps)(CurrentTaskPage);
+
+const styles = StyleSheet.create({
+    container: {
+        height,
+        paddingBottom: 70,
+    },
+})

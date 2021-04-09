@@ -72,7 +72,7 @@ class TaskItem extends Component {
                 <View style={styles.itemContainer}>
                     <View style={styles.topContainer}>
                         <View style={[styles.header, {borderLeftColor: this.labelName[item.level] || this.labelColor[0]}]}>
-                            <Text>{item.lost_location}{item.lost_age}{item.lost_name}走失</Text>
+                            <Text style={{fontWeight: "bold"}}>{item.lost_location}{item.lost_age}岁{item.lost_name}走失</Text>
                             <Label
                                 labelName={this.labelName[item.level] || this.labelName[0]}
                                 labelColor={this.labelName[item.level] || this.labelColor[0]}
