@@ -362,7 +362,7 @@ export const reqCountByAge = (begin_time, end_time) =>
     request.post('/summary/count_by_age/', {begin_time, end_time})
 
 // 统计走失地点
-export const reqCountByPlace = (begin_time, end_time, place) =>
+export const reqCountByPlace = (begin_time, end_timee) =>
     request.post('/summary/count_by_place/', {begin_time, end_time, place});
 
 // 当前队员出勤状态统计
@@ -370,11 +370,11 @@ export const reqMemberActiveSummary = () =>
     request.get('/summary/member_active_summary/');
 
 // 某年参与救助人员数量统计
-export const reqMemberHistorySummary = (year) =>
+export const reqMemberHistorySummary = (begin_time, end_time) =>
     request.post('/summary/member_history_summary/', {year});
 
 // 某年某月任务完成情况统计
-export const reqTaskSummary = (year, month) =>
+export const reqTaskSummary = (begin_time, end_time) =>
     request.post('/summary/task_summary/', {year, month});
 
 /**

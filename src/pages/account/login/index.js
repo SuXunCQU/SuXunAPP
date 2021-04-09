@@ -1,6 +1,6 @@
 import React, {Component} from "react";
-import {StyleSheet, Text, View} from "react-native";
-import {Button, CheckBox, Input} from "react-native-elements";
+import {Image, StatusBar, StyleSheet, Text, View} from "react-native";
+import {Button, CheckBox, Icon, Input} from "react-native-elements";
 import {Color, Layout, Size} from "../../../utils/GlobalStyle";
 import {pxToDp, screenHeight} from "../../../utils/styleKits";
 import Toast from "../../../utils/Toast";
@@ -90,11 +90,14 @@ class Index extends Component {
     render() {
         return (
             <View>
-                {/* 1.0 标题栏 开始 */}
-                <View style={styles.header}>
-                    <Text style={styles.headerFont}>登录</Text>
-                </View>
-                {/* 1.0 标题栏 结束 */}
+                {/* 0.0  状态栏 开始 */}
+                <StatusBar backgroundColor="transparent" translucent={true}/>
+                {/* 0.0  状态栏 结束 */}
+                {/* 1.0 背景图片 开始 */}
+                {/* 200 单位 dp 单位px -> dp单位? */}
+                <Image style={{width: "100%", height: pxToDp(220), backgroundColor: '#fff'}}
+                       source={require("../../../res/images/loginBackground.png")}/>
+                {/* 1.0 背景图片 结束*/}
                 {/* 2.0 主体部分 开始 */}
                 <View style={styles.content}>
                     {/* 2.1 输入栏 开始 */}
@@ -130,37 +133,55 @@ class Index extends Component {
                         {/*  2.1.2 密码输入栏 结束 */}
                     </View>
                     {/* 2.1 输入栏 结束 */}
-                    {/* 2.2 找回密码 开始*/}
-                    <Text style={styles.findPassword} onPress={this.toFindPassword}>找回密码</Text>
-                    {/* 2.2 找回密码 结束*/}
-                    {/* 2.3 登录按钮 开始 */}
-                    <Button
-                        buttonStyle={{...styles.button, backgroundColor: this.state.buttonColor}}
-                        title="确认登录"
-                        titleStyle={styles.buttonFont}
-                        disabled={!(this.state.phoneNumber.length != 0 && this.state.password.length > 1 && this.state.agreementChecked)}
-                        onPress={this.submit}
-                    />
-                    {/*  2.3 登录按钮 结束 */}
-                    {/* 2.4 阅读用户协议 开始 */}
-                    <View style={styles.tips}>
-                        {/* TO DO*/}
-                        <CheckBox
-                            center
-                            containerStyle={styles.checkBox}
-                            activeOpacity={1}
-                            title="请阅读同意"
-                            textStyle={styles.tipsFont}
-                            iconType="material-icons"
-                            checkedIcon="check-circle"
-                            checkedColor={Color.font.alleviate}
-                            uncheckedIcon="radio-button-unchecked"
-                            onPress={this.checkAgreement}
-                            checked={this.state.agreementChecked}
+                    {/* 2.2 登录按钮 开始 */}
+                    <View style={styles.login}>
+                        <Text style={styles.loginText}>登录</Text>
+                        <Button
+                            buttonStyle={styles.button}
+                            icon={
+                                <Icon
+                                    type='antdesign'
+                                    name="arrowright"
+                                    size={40}
+                                    color='white'
+                                />
+                            }
+                            onPress={this.submit}
+                            disabled={!(this.state.phoneNumber.length != 0 && this.state.password.length > 1 && this.state.agreementChecked)}
                         />
-                        <Text style={styles.tipsFont} onPress={this.getUserAgreement}>《用户协议》</Text>
                     </View>
-                    {/* 2.4 阅读用户协议 结束 */}
+                    {/*  2.2 登录按钮 结束 */}
+                    <View style={styles.addition}>
+                        {/* 2.3 阅读用户协议 开始 */}
+                        <View style={styles.tips}>
+                            {/* TO DO*/}
+                            <CheckBox
+                                center
+                                containerStyle={styles.checkBox}
+                                activeOpacity={1}
+                                title="请阅读同意"
+                                textStyle={{color: Color.font.alleviate}}
+                                iconType="material-icons"
+                                checkedIcon="check-circle"
+                                checkedColor={Color.font.alleviate}
+                                uncheckedIcon="radio-button-unchecked"
+                                onPress={this.checkAgreement}
+                                checked={this.state.agreementChecked}
+                            />
+                            <View>
+                                <Text style={styles.tipsFont}
+                                      onPress={this.getUserAgreement}>《用户协议》</Text>
+                            </View>
+
+                        </View>
+                        {/* 2.3 阅读用户协议 结束 */}
+                        {/* 2.4 找回密码 开始*/}
+                        <View style={styles.findPassword}>
+                            <Text style={styles.tipsFont} onPress={this.toFindPassword}>找回密码</Text>
+                        </View>
+
+                        {/* 2.4 找回密码 结束*/}
+                    </View>
                 </View>
                 {/* 2.0 主体部分 结束 */
                 }
@@ -196,42 +217,63 @@ const styles = StyleSheet.create({
         fontSize: Size.font.header,
     },
     content: {
-        backgroundColor: Color.background.content,
+        paddingTop: pxToDp(30),
+        paddingLeft: pxToDp(20),
+        paddingRight: pxToDp(20),
+        backgroundColor: "#fff",
         height: screenHeight - Size.header.height,
     },
     input: {
         marginTop: pxToDp(20),
         backgroundColor: "white",
     },
+    login: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: pxToDp(30),
+    },
+    loginText: {
+        paddingLeft: pxToDp(20),
+        marginLeft: pxToDp(5),
+        fontSize: pxToDp(35),
+    },
     button: {
-        width: pxToDp(240),
+        width: pxToDp(60),
         height: pxToDp(60),
         alignSelf: "center",
-        borderRadius: pxToDp(10),
+        borderRadius: pxToDp(30),
         marginBottom: pxToDp(5),
+        backgroundColor: Color.background.start,
     },
     buttonFont: {
         fontSize: Size.font.header,
     },
-    findPassword: {
-        fontWeight: "bold",
-        color: Color.font.alleviate,
-        alignSelf: "flex-end",
-        marginTop: pxToDp(10),
-        marginBottom: pxToDp(20),
-        marginRight: pxToDp(10),
+    addition: {
+        marginTop: pxToDp(40),
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
     tips: {
         flexDirection: "row",
-        ...Layout.flex.horizonVerticalCenter,
+        alignItems: 'center',
     },
     checkBox: {
-        backgroundColor: "transparent",
         borderWidth: 0,
+        backgroundColor: "transparent",
         marginRight: -20,
     },
+
     tipsFont: {
         fontWeight: "bold",
         color: Color.font.alleviate,
+        textDecorationLine: 'underline',
+    },
+    findPassword: {
+        fontWeight: "bold",
+        color: Color.font.alleviate,
+        textDecorationLine: 'underline',
+        paddingRight: pxToDp(10),
     },
 });
