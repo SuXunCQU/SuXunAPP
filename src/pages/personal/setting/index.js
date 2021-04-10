@@ -8,7 +8,7 @@ import NavigationUtil from "../../../utils/NavigationUtil";
 import NavigationBar from "../../../components/NavigationBar";
 import LinearGradient from "react-native-linear-gradient";
 import {Overlay} from "teaset";
-import ModalDropdown from "react-native-modal-dropdown";
+
 // import {PickerView} from "@ant-design/react-native";
 
 
@@ -44,12 +44,6 @@ class Index extends Component {
                 <View style={styles.bottomModal}>
                     <View style={styles.edit}>
                         <Text style={styles.editTitle}>修改性别</Text>
-                        {/*<PickerView*/}
-                        {/*    onChange={this.update}*/}
-                        {/*    value={genderScope[gender]}*/}
-                        {/*    data={genderScope}*/}
-                        {/*    cascade={false}*/}
-                        {/*/>*/}
                         <Input placeholder='请输入真实性别'/>
                         <Button title='确定' style={styles.confirm} color={Color.background.content}
                                 onPress={this.update('name', '测试')}/>

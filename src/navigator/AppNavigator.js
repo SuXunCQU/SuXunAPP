@@ -45,6 +45,17 @@ const ChatNavigator = createStackNavigator(
     }
 )
 
+const SettingNavigator = createStackNavigator(
+    {
+        ChatPage: {
+            screen: SettingPage,
+            navigationOptions: {
+                headerShown: false,
+            }
+        }
+    }
+)
+
 const ProfileNavigator = createStackNavigator(
     {
         ProfilePage: {
@@ -85,7 +96,7 @@ const MainNavigator = createStackNavigator(
 export default createAppContainer(createSwitchNavigator(
     {
         // Init: ChatNavigator,
-        Init: MainNavigator,
+        Init: LoginNavigator,
         Main: ChatNavigator,
     },
     {
