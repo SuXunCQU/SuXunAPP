@@ -480,17 +480,28 @@ class TestRNIMUI extends Component {
                 {/*{navigationBar}*/}
                 <View style={styles.header}>
                     {ViewUtil.getLeftBackButton(() => this.onBack())}
-                    <View ref="NavigatorView">
-                        <Button
-                            style={styles.sendCustomBtn}
-                            title="寻找65岁老人李玉兰"
-                            titleStyle={{color: '#121212'}}
-                            onPress={() => console.log('title')}
-                        >
-                        </Button>
-                    </View>
+                    <Button
+                        style={styles.sendCustomBtn}
+                        title="寻找65岁老人李玉兰"
+                        titleStyle={{color: '#121212'}}
+                        onPress={() => console.log('title')}
+                    >
+                    </Button>
                     <Icon name={'list'}/>
                 </View>
+                {/*<ActionButton*/}
+                {/*    buttonColor="rgba(231,76,60,1)"*/}
+                {/*    onPress={() => {*/}
+                {/*        alert('你点了我！')*/}
+                {/*    }}*/}
+                {/*    renderIcon={() => (*/}
+                {/*        <View style={styles.actionButtonView}>*/}
+                {/*            <Text style={styles.actionButtonText}>*/}
+                {/*                新增*/}
+                {/*            </Text>*/}
+                {/*        </View>)}*/}
+                {/*/>*/}
+                <View style={styles.placeholder}></View>
                 <MessageListView
                     style={this.state.messageListLayout}
                     ref="MessageList"
@@ -573,9 +584,12 @@ const styles = StyleSheet.create({
         borderWidth: Size.borderWidth,
         borderColor: Color.border,
         ...Size.header,
-        backgroundColor: "white",
+        backgroundColor:"white",
         justifyContent: 'space-between',
         paddingRight: pxToDp(10),
+    },
+    placeholder:{
+        ...Size.header,
     },
     sendCustomBtn: {
         backgroundColor: "white",
@@ -587,7 +601,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
-        backgroundColor: Color.button.active,
     },
     inputView: {
         backgroundColor: "green",
