@@ -77,6 +77,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(CurrentTaskPage);
 const styles = StyleSheet.create({
     container: {
         height,
-        paddingBottom: 70,
+        paddingBottom: 40,
     },
 })

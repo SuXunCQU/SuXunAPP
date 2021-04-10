@@ -4,7 +4,7 @@ export const Color = {
   background: {
     start: "#50eaa2",
     loginHeader: "#7ee7a8",
-    content: "#eafff2",
+    content: "#00E0C7",
   },
   icon: {
     active: "#17e6a1",
@@ -14,7 +14,7 @@ export const Color = {
     inActive: "#eafff2",
   },
   font: {
-    header: "#17e6a1",
+    header: "#121212",
     emphasize: "#008AE3",
     alleviate: "#9A9999",
   },
@@ -24,7 +24,7 @@ export const Color = {
 export const Size = {
   header: {
     width: "100%",
-    height: pxToDp(60),
+    height: 50,
   },
   icon: {
     width: pxToDp(40),

@@ -153,7 +153,7 @@ class CurrentTaskHomePage extends React.Component {
         const {navigation} = this.props;
         return(
             <View style={styles.container}>
-                地图
+                {/*地图*/}
                 <View style={styles.mapContainer}>
                     <MapView
                         locationEnabled

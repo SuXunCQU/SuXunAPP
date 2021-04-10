@@ -219,11 +219,11 @@ export default class ItemDetailPage extends React.Component{
 
 const styles = StyleSheet.create({
     container: {
-        height: "100%",
+        height: height,
         justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: "#fefefe",
-        paddingBottom: 70
+        paddingBottom: 40,
     },
     detailContainer:{
         width: "100%",

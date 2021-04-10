@@ -1,9 +1,11 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
+import { View, Text, StyleSheet, Button, Settings } from "react-native";
 import GlobalStyle from '../../res/style/GlobalStyle';
 import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 import Profile from './profile'
+import Setting from './setting'
+import Update from './update'
 import { connect } from 'react-redux';
 import actions from '../../redux/action';
 
@@ -11,12 +13,24 @@ class UserCenterPage extends React.Component{
     render(){
         const StackNavigator = createAppContainer(createStackNavigator(
             {
-                Content: {
+                Profile: {
                     screen: Profile,
                     navigationOptions:{
                         headerShown: false,
                     }
-                }
+                },
+                Setting: {
+                    screen: Setting,
+                    navigationOptions:{
+                        headerShown: false,
+                    }
+                },
+                Update: {
+                    screen: Update,
+                    navigationOptions:{
+                        headerShown: false,
+                    }
+                },
             }
         ));
         return <StackNavigator />

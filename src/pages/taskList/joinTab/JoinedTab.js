@@ -76,11 +76,11 @@ export default connect(mapStateToProps, mapDispatchToProps)(JoinedTab)
 
 const styles = StyleSheet.create({
     container: {
-        height: "100%",
+        height: height,
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#00e0c7",
-        paddingBottom: 70
+        // paddingBottom: 70
     },
     welcome:{
         fontSize: 20,
@@ -94,5 +94,6 @@ const styles = StyleSheet.create({
         height: "100%",
         width: "100%",
         backgroundColor: "#00e0c7",
+        marginBottom: 90,
     }
 });
