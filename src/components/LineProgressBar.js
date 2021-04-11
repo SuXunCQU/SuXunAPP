@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {StyleSheet, Text, Animated, View, TextInput, Easing, Dimensions} from 'react-native';
-import Svg, {Circle, Ellipse, G, LinearGradient, RadialGradient, Line, Path, Polygon, Polyline, Rect, Symbol, Use, Defs, Stop} from 'react-native-svg';
+import Svg, {Circle, G, Path} from 'react-native-svg';
+
 
 const {width, height, scale} = Dimensions.get("window");
 let AnimatedPath = Animated.createAnimatedComponent(Path);

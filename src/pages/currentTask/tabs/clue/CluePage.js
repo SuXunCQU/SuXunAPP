@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, FlatList, RefreshControl } from 'react-native';
+import {View, Text, StyleSheet, Button, FlatList, RefreshControl, Dimensions} from 'react-native';
+import MessageItem from '../../../../components/MessageItem';
+import NavigationBar from '../../../../components/NavigationBar';
+import ViewUtil from '../../../../utils/ViewUtil';
+import NavigationUtil from '../../../../utils/NavigationUtil';
 import {connect} from 'react-redux';
-import actions from '../../../redux/action';
-import GlobalStyle from '../../../res/style/GlobalStyle';
-import MessageItem from '../../../components/MessageItem';
-import clueList from '../../../res/data/clue.json';
-import NavigationBar from '../../../components/NavigationBar';
-import ViewUtil from '../../../utils/ViewUtil';
-import NavigationUtil from '../../../utils/NavigationUtil';
+import actions from '../../../../redux/action';
+import {clue_data} from '../../../../utils/mockUtils';
 
 const THEME_COLOR = "red";
+const {width, height, scale} = Dimensions.get("window");
 export default class CluePage extends React.Component{
     constructor(props){
         super(props);
@@ -37,12 +37,6 @@ export default class CluePage extends React.Component{
     }
 
     render(){
-        if(!clueList){
-            clueList = {
-                items: [],
-                isLoading: false,
-            }
-        }
         const {navigation} = this.props;
         let navigationBar = <NavigationBar
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
@@ -54,15 +48,14 @@ export default class CluePage extends React.Component{
             <View style={styles.container}>
                 {navigationBar}
                 <FlatList
-                    data={clueList}
+                    data={clue_data.items}
                     renderItem={(data)=>this.renderItem(data)}
-                    keyExtractor={(item)=> ""+item.clue_id}
+                    keyExtractor={(item)=> ""+item.id}
                     refreshControl={
                         <RefreshControl
                             title={'Loading'}
                             titleColor={THEME_COLOR}
                             colors={[THEME_COLOR]}
-                            refreshing={clueList.isLoading}
                             onRefresh={()=>this.loadData()}
                             tintColor={THEME_COLOR}
                         />

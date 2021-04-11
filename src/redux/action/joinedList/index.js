@@ -1,6 +1,6 @@
 import Types from '../types';
-import DataStore from '../../../expand/dao/DataStore'
-import joinedData from '../../../res/data/data.json'
+import DataStore from '../../../expand/dao/DataStore';
+import joinedData from '../../../res/data/data.json';
 /**
  * 获取已加入任务列表数据的异步action
  * @param storeName
