@@ -1,6 +1,6 @@
 import React from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import {createAppContainer, createSwitchNavigator} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
 import HomePage from "../pages/HomePage";
 import LoginPage from '../pages/account/login'
 import WelcomePage from "../pages/WelcomePage";
@@ -10,13 +10,13 @@ import DataStoreDemoPage from '../pages/demo/DataStoreDemoPage';
 import ChatPage from '../pages/currentTask/tabs/message/chat';
 import ProfilePage from '../pages/personal/profile'
 import SettingPage from "../pages/personal/setting";
-import UpdatePage from "../pages/personal/update";
+import MainDetailPage from "../components/ItemDetailPage";
 
 const InitNavigator = createStackNavigator(
     {
         WelcomePage: {
             screen: WelcomePage,
-            navigationOptions:{
+            navigationOptions: {
                 headerShown: false, // 隐藏头部
             }
         },
@@ -25,10 +25,10 @@ const InitNavigator = createStackNavigator(
 
 const LoginNavigator = createStackNavigator(
     {
-        LoginPage:{
+        LoginPage: {
             screen: LoginPage,
-            navigationOptions:{
-                headerShown:false,
+            navigationOptions: {
+                headerShown: false,
             }
         }
     }
@@ -36,10 +36,21 @@ const LoginNavigator = createStackNavigator(
 
 const ChatNavigator = createStackNavigator(
     {
-        ChatPage:{
+        ChatPage: {
             screen: ChatPage,
-            navigationOptions:{
-                headerShown:false,
+            navigationOptions: {
+                headerShown: false,
+            }
+        }
+    }
+)
+
+const SettingNavigator = createStackNavigator(
+    {
+        ChatPage: {
+            screen: SettingPage,
+            navigationOptions: {
+                headerShown: false,
             }
         }
     }
@@ -47,42 +58,36 @@ const ChatNavigator = createStackNavigator(
 
 const ProfileNavigator = createStackNavigator(
     {
-        ProfilePage:{
+        ProfilePage: {
             screen: ProfilePage,
-            navigationOptions:{
-                headerShown:false,
+            navigationOptions: {
+                headerShown: false,
             }
         },
-        SettingPage:{
+        SettingPage: {
             screen: SettingPage,
-            navigationOptions:{
-                headerShown:false,
+            navigationOptions: {
+                headerShown: false,
             }
         },
-        UpdatePage:{
-            screen:UpdatePage,
-            navigationOptions:{
-                headerShown:false,
-            }
-        }
     }
 )
 
 const MainNavigator = createStackNavigator(
     {
-        HomePage:{
+        HomePage: {
             screen: HomePage,
-            navigationOptions:{
+            navigationOptions: {
                 headerShown: false, // 隐藏头部
             }
         },
-        FetchDemoPage:{
+        FetchDemoPage: {
             screen: FetchDemoPage,
         },
-        AsyncStorageDemoPage:{
+        AsyncStorageDemoPage: {
             screen: AsyncStorageDemoPage,
         },
-        DataStoreDemoPage:{
+        DataStoreDemoPage: {
             screen: DataStoreDemoPage,
         }
     }
@@ -90,11 +95,11 @@ const MainNavigator = createStackNavigator(
 
 export default createAppContainer(createSwitchNavigator(
     {
-        // Init: LoginNavigator,
+        Init: LoginNavigator,
         Main: MainNavigator,
     },
     {
-        navigationOptions:{
+        navigationOptions: {
             header: null
         }
     }

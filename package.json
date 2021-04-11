@@ -26,6 +26,7 @@
     "prop-types": "^15.7.2",
     "react": "16.13.1",
     "react-native": "0.63.4",
+    "react-native-action-button": "^2.8.5",
     "react-native-amap3d": "^2.0.3",
     "react-native-elements": "^3.3.2",
     "react-native-fs": "^2.16.6",

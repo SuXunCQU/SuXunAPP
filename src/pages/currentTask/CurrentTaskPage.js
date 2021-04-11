@@ -1,8 +1,8 @@
 import React from 'react';
 import GlobalStyle from '../../res/style/GlobalStyle';
-import { createStackNavigator } from 'react-navigation-stack';
-import { createAppContainer } from 'react-navigation';
-import { connect } from 'react-redux';
+import {createStackNavigator} from 'react-navigation-stack';
+import {createAppContainer} from 'react-navigation';
+import {connect} from 'react-redux';
 import actions from '../../redux/action';
 import CluePage from './tabs/clue/CluePage';
 import CurrentTaskHomePage from './CurrentTaskHomePage';
@@ -10,16 +10,17 @@ import NewCluePage from './tabs/clue/NewCluePage';
 import OrderPage from "./tabs/OrderPage";
 import MainDetailPage from '../../components/ItemDetailPage';
 import ChatPage from './tabs/message/chat';
-import {StyleSheet, View, Dimensions} from "react-native";
+import {Dimensions, StyleSheet, View} from "react-native";
 
 const {width, height, scale} = Dimensions.get("window");
-class CurrentTaskPage extends React.Component{
-    render(){
+
+class CurrentTaskPage extends React.Component {
+    render() {
         const StackNavigator = createAppContainer(createStackNavigator(
             {
                 CurrentTaskHomePage: {
                     screen: CurrentTaskHomePage,
-                    navigationOptions:{
+                    navigationOptions: {
                         title: `当前任务：搜寻${this.props.detailItem && this.props.detailItem.lost_name}`,
                         headerStyle: GlobalStyle.headerStyle,
                         headerTitleStyle: GlobalStyle.headerTitleStyle,
@@ -27,31 +28,31 @@ class CurrentTaskPage extends React.Component{
                 },
                 CluePage: {
                     screen: CluePage,
-                    navigationOptions:{
+                    navigationOptions: {
                         headerShown: false,
                     }
                 },
-                NewCluePage:{
+                NewCluePage: {
                     screen: NewCluePage,
-                    navigationOptions:{
+                    navigationOptions: {
                         headerShown: false,
                     }
                 },
-                OrderPage:{
+                OrderPage: {
                     screen: OrderPage,
-                    navigationOptions:{
+                    navigationOptions: {
                         headerShown: false,
                     }
                 },
-                MainDetailPage:{
+                MainDetailPage: {
                     screen: MainDetailPage,
-                    navigationOptions:{
+                    navigationOptions: {
                         headerShown: false,
                     }
                 },
-                MessagePage:{
-                    screen:ChatPage,
-                    navigationOptions:{
+                MessagePage: {
+                    screen: ChatPage,
+                    navigationOptions: {
                         headerShown: false,
                     }
                 }
@@ -60,7 +61,7 @@ class CurrentTaskPage extends React.Component{
         ));
         return (
             <View style={styles.container}>
-                <StackNavigator />
+                <StackNavigator/>
             </View>
         )
     }
