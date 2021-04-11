@@ -116,7 +116,7 @@ class Index extends Component {
     toSetting = () => {
         console.log("setting");
         console.log(this.props.navigation);
-        this.props.navigation.navigate("Setting");
+        this.props.navigation.navigate("SettingPage");
     };
 
     /**
