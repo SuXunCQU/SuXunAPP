@@ -2,11 +2,10 @@ import React from 'react';
 import {View, Text, StyleSheet, Button, FlatList, RefreshControl, Dimensions} from 'react-native';
 import {connect} from 'react-redux';
 import actions from '../../../redux/action';
-import GlobalStyle from '../../../res/style/GlobalStyle';
-import ListItem from '../../../components/ListItem';
 import TaskItem from "../../../components/TaskView/TaskItem";
 import NavigationUtil from '../../../utils/NavigationUtil';
 import LinearGradient from "react-native-linear-gradient";
+import {member_data} from "../../../utils/mockUtils";
 
 const {width, height, scale} = Dimensions.get("window");
 const THEME_COLOR = 'red';
@@ -45,7 +44,12 @@ class JoinedTab extends React.Component{
             }
         }
         return(
-            <View style={styles.container}>
+            <LinearGradient
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                colors={['#00E0C7', '#009394']}
+                style={styles.container}
+            >
                 <FlatList
                     data={joinedList.items}
                     renderItem={(data)=>this.renderItem(data)}
@@ -62,7 +66,7 @@ class JoinedTab extends React.Component{
                     }
                     style={styles.list}
                 />
-            </View>
+            </LinearGradient>
         )
     }
 };
@@ -93,7 +97,6 @@ const styles = StyleSheet.create({
     list:{
         height: "100%",
         width: "100%",
-        backgroundColor: "#00e0c7",
         marginBottom: 90,
     }
 });

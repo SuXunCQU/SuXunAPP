@@ -1,15 +1,15 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button, FlatList, RefreshControl } from 'react-native';
-import {connect} from 'react-redux';
-import actions from '../../../redux/action';
-import GlobalStyle from '../../../res/style/GlobalStyle';
-import orderList from '../../../res/data/order.json';
+import {View, Text, StyleSheet, Button, FlatList, RefreshControl, Dimensions} from 'react-native';
+import MessageItem from '../../../components/MessageItem';
 import NavigationBar from '../../../components/NavigationBar';
 import ViewUtil from '../../../utils/ViewUtil';
 import NavigationUtil from '../../../utils/NavigationUtil';
-import OrderItem from "../../../components/OrderItem";
+import {connect} from 'react-redux';
+import actions from '../../../redux/action';
+import {order_data} from '../../../utils/mockUtils';
 
 const THEME_COLOR = "red";
+const {width, height, scale} = Dimensions.get("window");
 export default class OrderPage extends React.Component{
   constructor(props){
     super(props);
@@ -26,9 +26,9 @@ export default class OrderPage extends React.Component{
   renderItem(data){
     const item = data.item;
     return(
-      <OrderItem
-        item={item}
-      />
+        <MessageItem
+            item={item}
+        />
     )
   }
 
@@ -39,30 +39,29 @@ export default class OrderPage extends React.Component{
   render(){
     const {navigation} = this.props;
     let navigationBar = <NavigationBar
-      leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
-      title={'指令'}
-      style={styles.navigationBar}
+        leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
+        title={'指令'}
+        style={styles.navigationBar}
     />
     return(
-      <View style={styles.container}>
-        {navigationBar}
-        <FlatList
-          data={orderList}
-          renderItem={(data)=>this.renderItem(data)}
-          keyExtractor={(item)=> ""+item.order_id}
-          refreshControl={
-            <RefreshControl
-              title={'Loading'}
-              titleColor={THEME_COLOR}
-              colors={[THEME_COLOR]}
-              refreshing={orderList.isLoading}
-              onRefresh={()=>this.loadData()}
-              tintColor={THEME_COLOR}
-            />
-          }
-          style={styles.list}
-        />
-      </View>
+        <View style={styles.container}>
+          {navigationBar}
+          <FlatList
+              data={order_data.items}
+              renderItem={(data)=>this.renderItem(data)}
+              keyExtractor={(item)=> ""+item.id}
+              refreshControl={
+                <RefreshControl
+                    title={'Loading'}
+                    titleColor={THEME_COLOR}
+                    colors={[THEME_COLOR]}
+                    onRefresh={()=>this.loadData()}
+                    tintColor={THEME_COLOR}
+                />
+              }
+              style={styles.list}
+          />
+        </View>
     )
   }
 };
