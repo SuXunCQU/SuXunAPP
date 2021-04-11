@@ -154,42 +154,42 @@ class CurrentTaskHomePage extends React.Component {
         return(
             <View style={styles.container}>
                 {/*地图*/}
-                {/*<View style={styles.mapContainer}>*/}
-                {/*    <MapView*/}
-                {/*        locationEnabled*/}
-                {/*        center={{*/}
-                {/*            latitude: this.state.location && this.state.location.latitude || 39.91095,*/}
-                {/*            longitude: this.state.location && this.state.location.longitude || 116.37296*/}
-                {/*        }}*/}
-                {/*        style={styles.mapContainer}*/}
-                {/*        onLocation={this._onLocation}*/}
-                {/*    >*/}
-                {/*        {this.state.location ?*/}
-                {/*        <MapView.Polyline*/}
-                {/*            gradient*/}
-                {/*            width={3}*/}
-                {/*            colors={['#f44336', '#2196f3', '#4caf50']}*/}
-                {/*            coordinates={this.state.coordinates}*/}
-                {/*        /> : null}*/}
-                {/*        <MapView.Polyline*/}
-                {/*            width={5}*/}
-                {/*            color="rgba(255, 0, 0, 0.5)"*/}
-                {/*            coordinates={this.state.lines[0].position}*/}
-                {/*        />*/}
-                {/*        <MapView.Polyline*/}
-                {/*            dashed*/}
-                {/*            width={5}*/}
-                {/*            coordinates={this.state.lines[1].position}*/}
-                {/*        />*/}
-                {/*        <MapView.Polyline*/}
-                {/*            gradient*/}
-                {/*            width={5}*/}
-                {/*            colors={['#f44336', '#2196f3', '#4caf50']}*/}
-                {/*            onPress={this._onPress}*/}
-                {/*            coordinates={this.state.lines[2].position}*/}
-                {/*        />*/}
-                {/*    </MapView>*/}
-                {/*</View>*/}
+                <View style={styles.mapContainer}>
+                    <MapView
+                        locationEnabled
+                        center={{
+                            latitude: this.state.location && this.state.location.latitude || 39.91095,
+                            longitude: this.state.location && this.state.location.longitude || 116.37296
+                        }}
+                        style={styles.mapContainer}
+                        onLocation={this._onLocation}
+                    >
+                        {this.state.location ?
+                        <MapView.Polyline
+                            gradient
+                            width={3}
+                            colors={['#f44336', '#2196f3', '#4caf50']}
+                            coordinates={this.state.coordinates}
+                        /> : null}
+                        <MapView.Polyline
+                            width={5}
+                            color="rgba(255, 0, 0, 0.5)"
+                            coordinates={this.state.lines[0].position}
+                        />
+                        <MapView.Polyline
+                            dashed
+                            width={5}
+                            coordinates={this.state.lines[1].position}
+                        />
+                        <MapView.Polyline
+                            gradient
+                            width={5}
+                            colors={['#f44336', '#2196f3', '#4caf50']}
+                            onPress={this._onPress}
+                            coordinates={this.state.lines[2].position}
+                        />
+                    </MapView>
+                </View>
 
                 <View style={styles.bottomNavigator}>
                     <Icon iconName="chatbubbles" labelName="对话" style={{color: "#00e0c7",}} textStyle={{color: "#00e0c7"}} onPress={()=>{
