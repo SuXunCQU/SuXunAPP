@@ -1,12 +1,13 @@
 import React from 'react';
-import {View, Text, StyleSheet, Button, Dimensions, Alert, PermissionsAndroid} from 'react-native';
+import {View, Text, StyleSheet, Button, Dimensions, PermissionsAndroid, Alert, TextInput} from 'react-native';
+import JPush from '../../components/jpush/JPush'
+import {WebView} from 'react-native-webview';
 import { MapView } from "react-native-amap3d";
 import RNLocation from 'react-native-location';
 import Icon from '../../components/Icon';
 import CluePage from './tabs/clue/CluePage';
 import NavigationUtil from '../../utils/NavigationUtil';
 import {connect} from 'react-redux';
-// import GlobalStyle from "../../res/style/GlobalStyle";
 import {Color} from '../../utils/GlobalStyle';
 
 const {width, height, scale} = Dimensions.get("window");
@@ -17,6 +18,7 @@ class CurrentTaskHomePage extends React.Component {
 
     constructor(props) {
         super(props);
+        this.messageCount = 0;
         this.state = {
             location: null,
             coordinates: [],
@@ -74,44 +76,16 @@ class CurrentTaskHomePage extends React.Component {
             PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
             PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
         ]);
-
-        // await RNLocation.configure({
-        //     distanceFilter: 5.0
-        // })
-        //
-        // await RNLocation.requestPermission({
-        //     ios: "whenInUse",
-        //     android: {
-        //         detail: "coarse"
-        //     }
-        // }).then(granted => {
-        //     if (granted) {
-        //         this.locationSubscription = RNLocation.subscribeToLocationUpdates((locations) => {
-        //             /* Example location returned
-        //             {
-        //               speed: -1,
-        //               longitude: -0.1337,
-        //               latitude: 51.50998,
-        //               accuracy: 5,
-        //               heading: -1,
-        //               altitude: 0,
-        //               altitudeAccuracy: -1
-        //               floor: 0
-        //               timestamp: 1446007304457.029,
-        //               fromMockProvider: false
-        //             }
-        //             */
-        //             console.log(locations)
-        //         })
-        //         console.log("订阅成功");
-        //     }
-        // })
-
         console.log("组件已挂载")
-    }
 
-    _onPress = () => {
-
+        JPush.setLoggerEnable(true);
+        JPush.init();
+        JPush.getRegistrationID((result) => console.log(result));
+        JPush.addLocalNotification({
+            "messageID": `${this.messageCount++}`,
+            "title": "测试通知",
+            "content": "测试内容",
+        })
     }
 
     _onPressAddCoordinate = () => {
@@ -153,8 +127,20 @@ class CurrentTaskHomePage extends React.Component {
         const {navigation} = this.props;
         return(
             <View style={styles.container}>
+                {/*<script type="text/javascript" src="https://webapi.amap.com/maps?v=2.0&key=e42246aad47931d04c21276d03fcaac3"></script>*/}
                 {/*地图*/}
                 <View style={styles.mapContainer}>
+                    {/*<Button*/}
+                    {/*    title={"增加通知"}*/}
+                    {/*    onPress={() => {*/}
+                    {/*        JPush.addLocalNotification({*/}
+                    {/*            "messageID": `${this.messageCount++}`,*/}
+                    {/*            "title": `测试通知${this.messageCount}`,*/}
+                    {/*            "content": `测试内容${this.messageCount}`,*/}
+                    {/*        })*/}
+                    {/*    }}*/}
+                    {/*/>*/}
+                    {/*<WebView source={{uri: "https://m.amap.com/navi/?start=116.403124,39.940693&dest=116.481488,39.990464&destName=阜通西&naviBy=car&key=e42246aad47931d04c21276d03fcaac3"}}/>*/}
                     <MapView
                         locationEnabled
                         center={{
@@ -191,21 +177,21 @@ class CurrentTaskHomePage extends React.Component {
                     </MapView>
                 </View>
 
-                <View style={styles.bottomNavigator}>
-                    <Icon iconName="chatbubbles" labelName="对话" style={{color: "#00e0c7",}} textStyle={{color: "#00e0c7"}} onPress={()=>{
-                        navigation.navigate("MessagePage");
-                    }}
-                    />
-                    <Icon iconName="md-newspaper" labelName="详情" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={()=>{
-                        navigation.navigate("MainDetailPage", {data: this.props.detailItem});
-                    }}/>
-                    <Icon iconName="alert" labelName="线索" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
-                        navigation.navigate("CluePage");
-                    }}/>
-                    <Icon iconName="md-megaphone" labelName="指令" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
-                        navigation.navigate("OrderPage");
-                    }}/>
-                </View>
+                {/*<View style={styles.bottomNavigator}>*/}
+                {/*    <Icon iconName="chatbubbles" labelName="对话" style={{color: "#00e0c7",}} textStyle={{color: "#00e0c7"}} onPress={()=>{*/}
+                {/*        navigation.navigate("MessagePage");*/}
+                {/*    }}*/}
+                {/*    />*/}
+                {/*    <Icon iconName="md-newspaper" labelName="详情" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={()=>{*/}
+                {/*        navigation.navigate("MainDetailPage", {data: this.props.detailItem});*/}
+                {/*    }}/>*/}
+                {/*    <Icon iconName="alert" labelName="线索" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {*/}
+                {/*        navigation.navigate("CluePage");*/}
+                {/*    }}/>*/}
+                {/*    <Icon iconName="md-megaphone" labelName="指令" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {*/}
+                {/*        navigation.navigate("OrderPage");*/}
+                {/*    }}/>*/}
+                {/*</View>*/}
             </View>
         )
     }
@@ -249,5 +235,15 @@ const styles = StyleSheet.create({
         width,
         flexDirection: "row",
         justifyContent: "space-around",
-    }
+    },
+    button: {
+        borderWidth: 1,
+        borderColor: '#000000',
+        margin: 5,
+        padding: 5,
+        width: '70%',
+        backgroundColor: '#DDDDDD',
+        borderRadius: 5,
+    },
+
 });

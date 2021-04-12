@@ -140,7 +140,8 @@ android {
         manifestPlaceholders = [
              JPUSH_PKGNAME : applicationId,             // 极光
              JPUSH_APPKEY: "4bf5e4c1f3852e600dd072f0",	// 极光 APPKey
-             APP_CHANNEL: "developer-default"		// 极光 应用渠道号
+             APP_CHANNEL: "developer-default",		// 极光 应用渠道号
+             JPUSH_CHANNEL: "developer-default"		// 极光 应用渠道号
         ]
     }
     splits {
@@ -196,6 +197,7 @@ dependencies {
     compile project(':jmessage-react-plugin') // 极光
     compile project(':jcore-react-native')  // 极光
 
+
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
 
@@ -204,7 +206,8 @@ dependencies {
 
     // 聊天UI库
     implementation project(':aurora-imui-react-native')
-
+    implementation project(':jpush-react-native')  // 添加 jpush 依赖
+    implementation project(':jcore-react-native')  // 添加 jcore 依赖
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
       exclude group:'com.facebook.fbjni'
