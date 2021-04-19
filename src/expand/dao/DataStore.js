@@ -4,7 +4,7 @@ export default class DataStore {
 
     /**
      * 获取数据，优先获取本地数据，如果无本地数据或本地数据过期则获取网络数据
-     * @param {*} url 
+     * @param {*} url
      */
     fetchData(url){
         return new Promise((resolve, reject) => {
@@ -12,7 +12,7 @@ export default class DataStore {
                 .then((wrapData) => {
                     if(wrapData && DataStore.checkTimestampValid(wrapData.timestamp)){
                         resolve(wrapData);
-                    } 
+                    }
                     else{
                         this.fetchNetData(url)
                             .then((data) => {
@@ -27,7 +27,7 @@ export default class DataStore {
                     this.fetchNetData(url)
                         .then((data) => {
                             resolve(this._wrapData(data))
-                        })                            
+                        })
                         .catch((error) => {
                             reject(error);
                         })
@@ -37,9 +37,9 @@ export default class DataStore {
 
     /**
      * 保存数据
-     * @param {string} url 
-     * @param {*} data 
-     * @param {function} callback 
+     * @param {string} url
+     * @param {*} data
+     * @param {function} callback
      */
     saveData(url, data, callback) {
         if(!data || !url)
@@ -52,7 +52,7 @@ export default class DataStore {
 
     /**
      * 获取本地数据
-     * @param {*} url 
+     * @param {*} url
      * @returns {Promise}
      */
     fetchLocalData(url) {
@@ -60,6 +60,7 @@ export default class DataStore {
             AsyncStorage.getItem(url, (error, result) => {
                 if(!error){
                     try{
+                        console.log("已获取本地数据");
                         resolve(JSON.parse(result));
                     } catch(e) {
                         reject(e);
@@ -75,7 +76,7 @@ export default class DataStore {
 
     /**
      * 获取网络数据
-     * @param {string} url 
+     * @param {string} url
      * @returns {Promise}
      */
     fetchNetData(url) {

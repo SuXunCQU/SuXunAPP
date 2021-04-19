@@ -84,7 +84,7 @@ export default class ItemDetailPage extends React.Component {
             style={styles.navigationBar}
         />
 
-        const {data} = this.props.navigation.state.params;
+        const {data, type} = this.props.navigation.state.params;
         const lostTimestamp = new Date().getTime(); // 模仿数据中的timestamp
         const lostTime = new Date(lostTimestamp);
         return (
@@ -148,7 +148,7 @@ export default class ItemDetailPage extends React.Component {
                                             <Text style={styles.title}>性别</Text>
                                             <MaterialCommunityIcons name={"gender-male-female"} size={16}/>
                                         </View>
-                                        <Text style={styles.description}>{data.lost_gender}</Text>
+                                        <Text style={styles.description}>{data.lost_gender ? "男" : "女"}</Text>
                                     </View>
                                     <View style={styles.textBlock}>
                                         <View style={styles.label}>
@@ -166,7 +166,7 @@ export default class ItemDetailPage extends React.Component {
                                             <Text style={styles.title}>走失地点</Text>
                                             <Entypo name={"location-pin"} size={16}/>
                                         </View>
-                                        <Text style={styles.description}>{data.lost_location}</Text>
+                                        <Text style={styles.description}>{data.lost_place}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -240,18 +240,28 @@ export default class ItemDetailPage extends React.Component {
                                 />
                             </View>
 
-                            <View style={styles.buttonContainer}>
-                                <View style={{flex:1, marginLeft: 20, marginRight: 10}}>
-                                    <TouchableOpacity style={[styles.button, styles.openButton,  {marginTop: 0,}]} onPress={this.actionConfirm}>
-                                        <Text style={{...styles.textStyle, marginTop: 0,}}>退出</Text>
-                                    </TouchableOpacity>
+                            {type === "recruit" ? (
+                                <View style={styles.buttonContainer}>
+                                    <View style={{flex:1, marginLeft: 20, marginRight: 10}}>
+                                        <TouchableOpacity style={[styles.button, styles.openButton,  {marginTop: 0,}]} onPress={this.actionConfirm}>
+                                            <Text style={{...styles.textStyle, marginTop: 0,}}>加入</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                                <View style={{flex:1, marginRight: 20, marginLeft: 10}}>
-                                    <TouchableOpacity style={[styles.button, styles.openButton, {marginTop: 0,}]} onPress={this.actionConfirm}>
-                                        <Text style={{...styles.textStyle}}>完成</Text>
-                                    </TouchableOpacity>
+                            ) : (
+                                <View style={styles.buttonContainer}>
+                                    <View style={{flex:1, marginLeft: 20, marginRight: 10}}>
+                                        <TouchableOpacity style={[styles.button, styles.openButton,  {marginTop: 0,}]} onPress={this.actionConfirm}>
+                                            <Text style={{...styles.textStyle, marginTop: 0,}}>退出</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View style={{flex:1, marginRight: 20, marginLeft: 10}}>
+                                        <TouchableOpacity style={[styles.button, styles.openButton, {marginTop: 0,}]} onPress={this.actionConfirm}>
+                                            <Text style={{...styles.textStyle}}>完成</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
-                            </View>
+                            )}
                         </ScrollView>
                     }
 

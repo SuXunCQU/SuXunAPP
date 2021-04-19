@@ -22,7 +22,6 @@ class JoinedTab extends React.Component{
         const {onLoadJoinedListData} = this.props;
         const url = '../res/data/data.json';
         onLoadJoinedListData(url);
-        console.log(this.props && this.props.joinedList);
     }
 
     renderItem(data){
