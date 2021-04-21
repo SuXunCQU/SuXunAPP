@@ -16,6 +16,8 @@ target 'SuxunApp' do
 
   pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
 
+  pod 'JPush', :path => '../node_modules/jpush-react-native'
+
   target 'SuxunAppTests' do
     inherit! :complete
     # Pods for testing

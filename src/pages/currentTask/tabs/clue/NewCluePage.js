@@ -1,22 +1,21 @@
 import React, { Component } from "react";
-import {View, StyleSheet, TextInput, TouchableOpacity, Text, ScrollView, Dimensions} from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  Text,
+  ScrollView,
+  Dimensions,
+  Image,
+  FlatList
+} from "react-native";
 import {TextInputLayout} from 'rn-textinputlayout';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import NavigationBar from "../../../components/NavigationBar";
-import NavigationUtil from "../../../utils/NavigationUtil";
-import ViewUtil from '../../../utils/ViewUtil';
+import NavigationBar from "../../../../components/NavigationBar";
+import NavigationUtil from "../../../../utils/NavigationUtil";
+import ViewUtil from '../../../../utils/ViewUtil';
 import Feather from 'react-native-vector-icons/Feather';
-
-const options = {
-  title: '从相册选择或拍摄',
-  chooseFromLibraryButtonTitle: '从相册选择',
-  takePhotoButtonTitle: '拍摄',
-  cancelButtonTitle: '取消',
-  includeBase64: true,
-  storageOptions: {
-    skipBackup: true,
-  },
-};
 
 const {width, height, scale} = Dimensions.get("window");
 export default class NewCluePage extends Component {
@@ -33,6 +32,37 @@ export default class NewCluePage extends Component {
 
       ]
     };
+  }
+
+  options = {
+    includeBase64: true,
+    quality: 0.5,
+  };
+
+  selectPhoto = (response) => {
+    if (!response.error) {
+      if (response.didCancel) {
+        return;
+      }
+      // console.log(response);
+      const source = {uri: response.uri};
+      this.setState((prevState) => {
+        let imageObjs = prevState.imageObjs;
+        imageObjs.push({
+          // base64: response.base64,
+          fileURI: response.uri,
+          fileName: response.fileName || 'cash.jpg',
+          fileType: response.type,
+        });
+        return {imageObjs: imageObjs}
+      }, () => {
+        console.log(this.state.imageObjs);
+      })
+      this.setState({
+        uploadImage: source,
+        showUploadIcon: false,
+      })
+    }
   }
 
   render() {
@@ -78,35 +108,35 @@ export default class NewCluePage extends Component {
             />
           </TextInputLayout>
         </View>
+
+        {/* 已上传的图片 */}
+        {this.state.imageObjs.length ? (
+              <FlatList
+                  style={{width, flexGrow: 0,}}
+                  contentContainerStyle={{justifyContent: "center"}}
+                  numColumns={3}
+                  data={this.state.imageObjs}
+                  renderItem={(item, index) => {
+                    return (
+                        <View style={styles.imageContainer}>
+                          <View style={styles.textContainer} >
+                            <Image source={{uri: item.item.fileURI}} style={{width: "100%", height: "100%"}}/>
+                          </View>
+                        </View>
+                    )
+                  }}
+                  keyExtractor={(item, index) => index}
+              />
+            ) : null}
+
+        {/* 上传图片按钮 */}
         <View style={styles.imageContainer}>
-          <TouchableOpacity onPress={() => launchImageLibrary(options, (response) => {
-                if (!response.error) {
-                  if (response.didCancel) {
-                    return;
-                  }
-                  // console.log(response);
-                  const source = {uri: response.uri};
-                  this.setState((prevState) => {
-                    let imageObjs = prevState.imageObjs;
-                    imageObjs.push({
-                      base64: response.base64,
-                      fileURI: response.uri,
-                      fileName: response.fileName || 'cash.jpg',
-                      fileType: response.type,
-                    });
-                    return {imageObjs: imageObjs}
-                  }, () => {
-                    console.log(this.state.imageObjs);
-                  })
-                  this.setState({
-                    uploadImage: source,
-                    showUploadIcon: false,
-                  })
-                }
-              })}>
-            <View style={styles.textContainer}>
-              <Feather name={"image"} style={{fontSize: 80}}/>
-            </View>
+          <TouchableOpacity
+              onPress={() => launchImageLibrary(this.options, this.selectPhoto)}
+          >
+              <View style={styles.textContainer}>
+                <Feather name={"image"} style={{fontSize: 80, width: "100%", height: "100%", textAlign: "center"}}/>
+              </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -129,7 +159,8 @@ export default class NewCluePage extends Component {
 
 const styles = StyleSheet.create({
   container:{
-    flex: 1,
+    width,
+    height,
     backgroundColor: "#F5FCFF",
   },
   navigationBar: {
@@ -172,6 +203,7 @@ const styles = StyleSheet.create({
     borderColor: "#e8e8e8",
     borderRadius: 10,
     marginLeft: 10,
+    marginBottom: 10,
     // ios的阴影
     shadowColor: 'gray',
     shadowOffset: {width: 0.5, height: 0.5},
@@ -186,8 +218,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 10,
-    paddingTop: 5,
+    padding: 10,
   },
   title:{
     fontWeight: "bold",
@@ -200,4 +231,7 @@ const styles = StyleSheet.create({
   description:{
     color: "#555",
   },
+  uploadImagesContainer:{
+    width: "100%"
+  }
 })

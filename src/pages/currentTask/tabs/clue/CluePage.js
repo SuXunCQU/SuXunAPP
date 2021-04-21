@@ -1,12 +1,12 @@
 import React from 'react';
 import {View, Text, StyleSheet, Button, FlatList, RefreshControl, Dimensions} from 'react-native';
-import MessageItem from '../../../components/MessageItem';
-import NavigationBar from '../../../components/NavigationBar';
-import ViewUtil from '../../../utils/ViewUtil';
-import NavigationUtil from '../../../utils/NavigationUtil';
+import MessageItem from '../../../../components/MessageItem';
+import NavigationBar from '../../../../components/NavigationBar';
+import ViewUtil from '../../../../utils/ViewUtil';
+import NavigationUtil from '../../../../utils/NavigationUtil';
 import {connect} from 'react-redux';
-import actions from '../../../redux/action';
-import {clue_data} from '../../../utils/mockUtils';
+import actions from '../../../../redux/action';
+import {clue_data} from '../../../../utils/mockUtils';
 
 const THEME_COLOR = "red";
 const {width, height, scale} = Dimensions.get("window");

@@ -57,25 +57,26 @@ class TaskItem extends Component {
     };
 
     render() {
-        console.log("ListItem render!");
-        const {item} = this.props;
+        const {item, type} = this.props;
         if(!item || !item.lost_name)
             return null;
         const lostTimestamp = new Date().getTime(); // 模仿数据中的timestamp
         const lostTime = new Date(lostTimestamp);
+        const level = Math.floor(Math.random() * 5)
+        console.log(level);
         return (
             <TouchableOpacity
                 activeOpacity={0.8}
                 onPress={()=>{
-                    NavigationUtil.goPage({data: item}, "ItemDetailPage");
+                    NavigationUtil.goPage({data: item, type: type}, "ItemDetailPage");
                 }}>
                 <View style={styles.itemContainer}>
                     <View style={styles.topContainer}>
-                        <View style={[styles.header, {borderLeftColor: this.labelName[item.level] || this.labelColor[0]}]}>
+                        <View style={[styles.header, {borderLeftColor: this.labelColor[level] || this.labelColor[0]}]}>
                             <Text style={{fontWeight: "bold"}}>{item.lost_location}{item.lost_age}岁{item.lost_name}走失</Text>
                             <Label
-                                labelName={this.labelName[item.level] || this.labelName[0]}
-                                labelColor={this.labelName[item.level] || this.labelColor[0]}
+                                labelName={this.labelName[level] || this.labelName[0]}
+                                labelColor={this.labelColor[level] || this.labelColor[0]}
                             />
                         </View>
                         <View style={styles.descriptionContainer}>
@@ -98,20 +99,27 @@ class TaskItem extends Component {
                             contentContainerStyle={styles.listViewStyle}
                             columnWrapperStyle={{marginBottom: IMAGE_MARGIN_RIGHT}}
                         />
-                        <View style={styles.detailContainer}>
-                            <View style={{flexDirection: "row", justifyContent:"center", alignItems: "center", paddingLeft: 10}}>
-                                <Switch
-                                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                                    thumbColor={this.props.mainTaskId === this.props.item.lost_id ? "#3498db" : "#f4f3f4"}
-                                    ios_backgroundColor="#3e3e3e"
-                                    onValueChange={this.onSwitchChange}
-                                    value={this.props.mainTaskId === this.props.item.lost_id}
-                                    style={styles.button}
-                                />
-                                <Text>设为当前任务</Text>
+                        {type === "recruit" ? (
+                            <View style={[styles.detailContainer, {justifyContent: "flex-end"}]}>
+                                <Text>查看详情</Text>
                             </View>
-                            <Text>查看详情</Text>
-                        </View>
+                        ) : (
+                            <View style={styles.detailContainer}>
+                                <View style={{flexDirection: "row", justifyContent:"center", alignItems: "center", paddingLeft: 10}}>
+                                    <Switch
+                                        trackColor={{ false: "#767577", true: "#81b0ff" }}
+                                        thumbColor={this.props.mainTaskId === this.props.item.lost_id ? "#3498db" : "#f4f3f4"}
+                                        ios_backgroundColor="#3e3e3e"
+                                        onValueChange={this.onSwitchChange}
+                                        value={this.props.mainTaskId === this.props.item.lost_id}
+                                        style={styles.button}
+                                    />
+                                    <Text>设为当前任务</Text>
+                                </View>
+                                <Text>查看详情</Text>
+                            </View>
+                        )}
+
                     </View>
                 </View>
             </TouchableOpacity>

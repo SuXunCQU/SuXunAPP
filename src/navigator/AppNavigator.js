@@ -95,7 +95,6 @@ const MainNavigator = createStackNavigator(
 
 export default createAppContainer(createSwitchNavigator(
     {
-        // Init: ChatNavigator,
         Init: LoginNavigator,
         Main: MainNavigator,
     },
