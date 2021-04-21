@@ -29,6 +29,9 @@ const quit_reason = [
 const pause_reason = [
     '搜寻时间过长', '投入的人力物力财力已经远超预期', '其他理由'
 ];
+const clue_location = [
+    '超市附近', '公园附近', '马路边', '桥下', '河边', '湖边', '饭店附近', '学校附近', '公交站', '商场附近'
+]
 
 const incident_mock_data =
 [
@@ -287,9 +290,9 @@ const member_data = Mock.mock({
         // 家庭住址
         'member_address': '@county(true)',
         // 家庭住址坐标
-        'member_location': ['@float(-180, 180)', '@float(-90, 90)'],
+        'member_location': ['@float(-180, 180)', '@float(-90, 90)'].join(","),
         // 当前位置
-        'current_pos': ['@float(-180, 180)', '@float(-90, 90)'],
+        'current_pos': ['@float(-180, 180)', '@float(-90, 90)'].join(","),
         // 联系电话
         'member_phone': '@phone_number',
         // 微信联系方式：以wxid为例
@@ -297,11 +300,11 @@ const member_data = Mock.mock({
         // 身份证号码
         'member_idcard_number': '@id',
         // 特长
-        'member_strength': '@hobby',
+        'member_strength': () => Random.hobby().join(","),
         // 救援装备
-        'member_equipment': '@equipment',
+        'member_equipment': () => Random.equipment().join(","),
         // 常用交通方式
-        'member_transportType': '@vehicle',
+        'member_transportType': () => Random.vehicle().join(","),
         // 个人照片url
         'member_photo': '@url',
         // 身份证照片url
@@ -309,7 +312,7 @@ const member_data = Mock.mock({
         // 密码
         'password|6-30': /[a-z]?[A-Z]?[0-9]?/,
         // 角色id
-        'role_id': '@integer(20)',
+        'role_id': '@integer(0,3)',
         // 是否出勤:
         'is_work|1': true,
     }]
@@ -331,20 +334,17 @@ Random.extend({
 })
 let index = 1;
 const task_data = Mock.mock({
-    'items|15':[ () => {
+    'items|14':[ () => {
         const item = Mock.mock('@incident_item');
         const start_timestamp = Mock.Random.integer(1000000000000, 1700000000000);
         const end_timestamp = start_timestamp + Mock.Random.integer(10000000, 1000000000);
-        const start_time = new Date(start_timestamp).toLocaleString();
-        const end_time = new Date(end_timestamp).toLocaleString();
         return {
             'task_id': index,
             'incident_id': item.incident_id,
             'task_name': `寻找${item.lost_age}岁${item.lost_name}`,
             'task_level': Math.floor(Math.random() * 16),
-            'start_time': start_time,
             'start_timestamp': start_timestamp,
-            'end_time': end_time,
+            'end_timestamp': end_timestamp,
             'status': Math.ceil(Math.random() * 3),
             'description_id': index++,
         }
@@ -391,13 +391,13 @@ function generateIncidentItem(incident_mock_data){
         if(!item.reporter_wechat)
             item.reporter_wechat = Mock.mock('@guid');
         item.incident_id = i;
-        item.lost_time = new Date(item.lost_time).toLocaleString();
+        item.lost_timestamp = new Date(item.lost_time).getTime();
         item.lost_idcard_number = Random.id();
-        item.lost_phone = Random.url();
+        item.lost_photo = `${i}.jpg`;
         item.reporter_name = Random.cname();
-        item.reporter_gender = Random.boolean();
+        item.reporter_gender = Random.integer(0, 1);
         item.reporter_idcard_number = Random.id();
-        item.reporter_idcard_photo = [Random.url(), Random.url()];
+        item.reporter_idcard_photo = [Random.url(), Random.url()].join(",");
         item.relation = Mock.mock('@relation');
         item.reporter_address = Random.county(true);
         item.is_start = Random.boolean();
@@ -415,15 +415,13 @@ function generateRoleItem(member_data){
         const member_item = Random.pick(member_items, 1, 1);
         const create_timestamp = Mock.Random.integer(1000000000000, 1700000000000);
         const authorize_timestamp = create_timestamp + Mock.Random.integer(1000000000, 10000000000);
-        const create_time = new Date(create_timestamp).toLocaleString();
-        const authorize_time = new Date(authorize_timestamp).toLocaleString();
         results.push({
             'role_id': i,
             'role_name': roles[i],
             'role_authority': authorities[i].join(","),
-            'role_create_time': create_time,
-            'authorize_time': authorize_time,
-            'authorize_member_id': i == 0 ? 1 : member_item.member_id
+            'role_create_timestamp': create_timestamp,
+            'authorize_timestamp': authorize_timestamp,
+            'authorize_member_id': i === 0 ? 1 : member_item.member_id
         })
     }
     return results;
@@ -436,7 +434,7 @@ function generateForceItem(task_data, member_data){
     const task_items = task_data.items;
     const task_items_length = task_items.length;
     const results = [];
-    const member_id_list = getValueList(member_data, "id");
+    const member_id_list = getValueList(member_data, "member_id");
     let index = 1;
     for(let i = 0; i < task_items_length; i++){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
@@ -449,7 +447,6 @@ function generateForceItem(task_data, member_data){
                 'member_id': random_list[j],
                 'group_id': Random.integer(0, 100),
                 'location_list': [
-
                 ]
             });
         }
@@ -463,22 +460,21 @@ function generateQuitItem(task_data, member_data){
     const task_items = task_data.items;
     const task_items_length = task_items.length;
     const results = [];
-    const member_id_list = getValueList(member_data, "id");
+    const member_id_list = getValueList(member_data, "member_id");
     let index = 1;
     for(let i = 0; i < task_items_length; i++){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
         random_list.sort(compareFromSmallToLarge);
         let size = random_list.length;
         for(let j = 0; j < size; j++, index++){
-            const timestamp = new Date(task_items[i].start_time).getTime() + Mock.Random.integer(10000000, 1000000000);
-            const time = new Date(timestamp).toLocaleString();
+            const timestamp = task_items[i].start_timestamp+ Mock.Random.integer(10000000, 1000000000);
             results.push({
                 'apply_id': index,
                 'task_id': i,
                 'member_id': random_list[j],
                 'reason': Mock.mock('@quit_reason'),
                 'status': Mock.Random.boolean(),
-                'apply_time': time
+                'apply_timestamp': timestamp
             });
         }
     }
@@ -490,25 +486,26 @@ function generateQuitItem(task_data, member_data){
 function generateClueItem(task_data, member_data){
     const task_items = task_data.items;
     const task_items_length = task_items.length;
+    const member_items = member_data.items;
     const results = [];
-    const member_id_list = getValueList(member_data, "id");
+    const member_id_list = getValueList(member_data, "member_id");
     let index = 1;
     for(let i = 0; i < task_items_length; i++){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
         random_list.sort(compareFromSmallToLarge);
         let size = random_list.length;
         for(let j = 0; j < size; j++, index++){
-            const timestamp = task_items[i].start_timestamp+ Mock.Random.integer(10000000, 1000000000);
-            const time = new Date(timestamp).toLocaleString();
+            const timestamp = task_items[i].start_timestamp + Mock.Random.integer(10000000, 1000000000);
             results.push(Mock.mock({
                 'clue_id': index,
                 'task_id': i,
-                'member_id': random_list[j],
-                'text': '@csentence',
+                'member_id': member_items[j].member_id,
+                'member_name': member_items[j].member_name,
+                'text': `${incident_mock_data[i].lost_place}的某个${clue_location[Math.floor(Math.random() * 10)]}见到疑似走失者`,
                 'photo': '@url',
                 'video': '@url',
-                'post_time': time,
-                'post_location': ['@float(-180, 180)', '@float(-90, 90)'],
+                'post_timestamp': timestamp,
+                'post_location': ['@float(-180, 180)', '@float(-90, 90)'].join(","),
                 'type|0-2': 1,
                 'is_noticed': Random.boolean(),
             }));
@@ -522,8 +519,9 @@ function generateClueItem(task_data, member_data){
 function generateOrderItem(task_data, member_data){
     const task_items = task_data.items;
     const task_items_length = task_items.length;
+    const member_items = member_data.items;
     const results = [];
-    const member_id_list = getValueList(member_data, "id");
+    const member_id_list = getValueList(member_data, "member_id");
     let index = 1;
     for(let i = 0; i < task_items_length; i++){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
@@ -531,16 +529,16 @@ function generateOrderItem(task_data, member_data){
         let size = random_list.length;
         for(let j = 0; j < size; j++, index++){
             const timestamp = task_items[i].start_timestamp + Mock.Random.integer(10000000, 1000000000);
-            const time = new Date(timestamp).toLocaleString();
             results.push(Mock.mock({
                 'order_id': index,
                 'task_id': i,
-                'member_id': random_list[j],
-                'text': '@csentence',
+                'member_id': member_items[j].member_id,
+                'member_name': member_items[j].member_name,
+                'text': `请马上前往${incident_mock_data[i].lost_place}附近的${clue_location[Math.floor(Math.random() * 10)]}周边搜寻`,
                 'photo': '@url',
                 'video': '@url',
-                'time': time,
-                'location': ['@float(-180, 180)', '@float(-90, 90)'],
+                'timestamp': timestamp,
+                'location': ['@float(-180, 180)', '@float(-90, 90)'].join(","),
             }));
         }
     }
@@ -558,14 +556,13 @@ function generatePostponeItem(task_data, member_data){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
         random_list.sort(compareFromSmallToLarge);
         const timestamp = task_items[i].start_timestamp+ Mock.Random.integer(10000000, 1000000000);
-        const time = new Date(timestamp).toLocaleString();
         results.push(Mock.mock({
             'pause_id': i,
             'task_id': i,
             'member_id': random_list[Random.integer(0, random_list.length)],
             'reason': '@pause_reason',
             'signature_photo': '@url',
-            'time': time,
+            'timestamp': timestamp,
             'status': Random.boolean(),
         }));
     }
@@ -585,7 +582,6 @@ function generateCompleteItem(task_data, member_data){
         let random_list = Random.pick(member_id_list, 1, member_id_list.length);
         random_list.sort(compareFromSmallToLarge);
         const timestamp = task_items[i].start_timestamp + Mock.Random.integer(10000000, 1000000000);
-        const time = new Date(timestamp).toLocaleString();
         results.push({
             'finish_id': i,
             'task_id': i,
@@ -593,7 +589,7 @@ function generateCompleteItem(task_data, member_data){
             'certificate_photo': Random.url(),
             'group_photo': Random.url(),
             'location': [Random.float(-180, 180), Random.float(-90, 90)],
-            'time': time,
+            'timestamp': timestamp,
             'status': Random.boolean(),
         });
     }
@@ -626,11 +622,10 @@ function compareFromSmallToLarge(value1, value2) {
     }
 }
 
-
 export {
     incident_data,
     member_data, role_data,
-    task_data, force_data, quit_data, clue_data, order_data, postpone_data, complete_data
+    task_data, force_data, quit_data, clue_data, order_data, postpone_data, complete_data,
 };
 
 // console.log(JSON.stringify(complete_data, null, 5));

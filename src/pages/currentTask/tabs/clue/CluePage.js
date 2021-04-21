@@ -7,24 +7,55 @@ import NavigationUtil from '../../../../utils/NavigationUtil';
 import {connect} from 'react-redux';
 import actions from '../../../../redux/action';
 import {clue_data} from '../../../../utils/mockUtils';
+import {reqQueryClueByKey, reqQueryTaskMemberByKey} from "../../../../api";
 
 const THEME_COLOR = "red";
 const {width, height, scale} = Dimensions.get("window");
-export default class CluePage extends React.Component{
+class CluePage extends React.Component{
     constructor(props){
         super(props);
+        this.state = {
+
+        };
     }
 
-    componentDidMount() {
-        // this.loadData();
+    async componentDidMount() {
+        const clues = await this.loadCluesData();
+        const members = await this.loadMembersData();
+        console.log(clues);
+        console.log(members);
+        this.setState({
+            clues: clues.result,
+            members: members.result,
+        })
     }
 
-    loadData() {
-        // console.log(this.props && this.props.clueList);
+    loadCluesData() {
+        const task_id = 2;
+        return reqQueryClueByKey(task_id).then((response) => {
+            return response;
+        })
+    }
+
+    loadMembersData() {
+        const task_id = 2;
+        return reqQueryTaskMemberByKey(task_id).then((response) => {
+            return response;
+        })
+    }
+
+    queryNameById(array, id){
+        const size = array.length;
+        for(let i = 0; i < size; i++){
+            if(array[i].member_id === id)
+                return array[i].member_name;
+        }
+        return "";
     }
 
     renderItem(data){
         const item = data.item;
+        item.member_name = this.queryNameById(this.state.members, item.member_id);
         return(
             <MessageItem
                 item={item}
@@ -38,6 +69,9 @@ export default class CluePage extends React.Component{
 
     render(){
         const {navigation} = this.props;
+        let {clues} = this.state;
+        if(!clues)
+            clues = [];
         let navigationBar = <NavigationBar
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
             rightButton={ViewUtil.getRightAddButton(() => navigation.navigate("NewCluePage", {navigation: navigation}))}
@@ -48,9 +82,9 @@ export default class CluePage extends React.Component{
             <View style={styles.container}>
                 {navigationBar}
                 <FlatList
-                    data={clue_data.items}
+                    data={clues}
                     renderItem={(data)=>this.renderItem(data)}
-                    keyExtractor={(item)=> ""+item.id}
+                    keyExtractor={(item)=> ""+item.clue_id}
                     refreshControl={
                         <RefreshControl
                             title={'Loading'}
@@ -65,7 +99,12 @@ export default class CluePage extends React.Component{
             </View>
         )
     }
-};
+}
+
+const mapStateToProps = (state) => ({
+    task_id: state.taskItem.task_id,
+})
+export default connect(mapStateToProps)(CluePage);
 
 const styles = StyleSheet.create({
     container: {

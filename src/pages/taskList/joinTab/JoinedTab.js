@@ -5,23 +5,12 @@ import actions from '../../../redux/action';
 import TaskItem from "../../../components/TaskView/TaskItem";
 import NavigationUtil from '../../../utils/NavigationUtil';
 import LinearGradient from "react-native-linear-gradient";
-import {member_data} from "../../../utils/mockUtils";
 
 const {width, height, scale} = Dimensions.get("window");
 const THEME_COLOR = 'red';
 class JoinedTab extends React.Component{
     constructor(props){
         super(props);
-    }
-
-    componentDidMount() {
-        this.loadData();
-    }
-
-    loadData() {
-        const {onLoadJoinedListData} = this.props;
-        const url = '../res/data/data.json';
-        onLoadJoinedListData(url);
     }
 
     renderItem(data){
@@ -36,6 +25,7 @@ class JoinedTab extends React.Component{
     render(){
         NavigationUtil.navigation = this.props.navigation;
         let {joinedList} = this.props;
+        console.log(joinedList);
         if(!joinedList){
             joinedList = {
                 items: [],
@@ -50,16 +40,15 @@ class JoinedTab extends React.Component{
                 style={styles.container}
             >
                 <FlatList
-                    data={joinedList.items}
+                    data={[joinedList.item]}
                     renderItem={(data)=>this.renderItem(data)}
-                    keyExtractor={(item)=> ""+item.lost_id}
+                    keyExtractor={(item) => item && item.task_id}
                     refreshControl={
                         <RefreshControl
                             title={'Loading'}
                             titleColor={THEME_COLOR}
                             colors={[THEME_COLOR]}
                             refreshing={joinedList.isLoading}
-                            onRefresh={()=>this.loadData()}
                             tintColor={THEME_COLOR}
                         />
                     }
@@ -72,10 +61,7 @@ class JoinedTab extends React.Component{
 const mapStateToProps = (state) => ({
     joinedList: state.joinedList,
 });
-const mapDispatchToProps = (dispatch) => ({
-    onLoadJoinedListData: (url) => dispatch(actions.onLoadJoinedListData(url)),
-});
-export default connect(mapStateToProps, mapDispatchToProps)(JoinedTab)
+export default connect(mapStateToProps)(JoinedTab)
 
 const styles = StyleSheet.create({
     container: {

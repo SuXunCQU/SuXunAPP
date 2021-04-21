@@ -38,8 +38,8 @@ export function onLoadJoinedListData(url, pageSize){
     }
 }
 
-export function onLoadMoreListData(pageIndex, pageSize, dataArray=[], callback){
-
+export function onAddJoinListItem(item){
+   return {type: Types.JOINEDLIST_ADD, item: item}
 }
 
 function handleData(dispatch, data, pageSize) {

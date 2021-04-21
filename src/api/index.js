@@ -25,7 +25,7 @@ export const reqAddClue = (task_id, member_id, required, text, photo, video, pos
 
 // 关键字检索线索
 export const reqQueryClueByKey = (task_id, member_id, text, photo, video, pos, create_time) =>
-    request.post('/clue/query_by_key/', {
+    request.privatePost('/clue/query_by_key/', {
         task_id, member_id, text, photo, video, pos, create_time
     });
 
@@ -324,12 +324,19 @@ export const reqExitTaskJudge = (is_agree, task_id, member_id) =>
     request.post('/member-task/exit_judge/', {is_agree, task_id, member_id});
 
 // 关键字检索任务队员
-export const reqQueryTaskMemberByKey = (name, age, gender, address, is_manager, is_work, task_id) =>
-    request.post('/member-task/query_by_key/', {name, age, gender, address, is_manager, is_work, task_id});
+export const reqQueryTaskMemberByKey = (task_id, name, age, gender, address, is_manager, is_work) =>
+    request.privatePost('/member-task/query_by_key/', {task_id, name, age, gender, address, is_manager, is_work});
 
 // 通过id查看任务队员
 export const reqReadTaskMember = (id) =>
     request.get(`/member-task/${id}/`);
+
+/**
+ * 指令
+ */
+// 关键字检索指令
+export const reqQueryOrderByKey = (task_id) =>
+    request.privatePost('/instruction/query_by_key/', {task_id})
 
 /**
  * 暂缓任务
@@ -388,6 +395,12 @@ export const reqCreateTask = (lost_id, start_time, end_time, state, rank, more) 
 export const reqQueryTaskByKey = (start_time, end_time, state, rank) =>
     request.post('/task/query_by_key/', {start_time, end_time, state, rank});
 
+// 拉取任务列表
+export const reqTask = () => request.privateGet('/task/')
+
+// 拉取任务——走失者列表
+export const reqTasksnIncidents = () => request.privateGet('/task/moreinfolist')
+
 // 任务分发
 export const reqTaskDispatch = (reporter_place, rank) =>
     request.post('/task/task_dispatch/', {reporter_place, rank});
@@ -409,6 +422,14 @@ export const reqDeleteTask = (id) => request.delete(`/task/${id}/`);
 // 上传文件
 export const reqUpload = (name, file, creat_time) =>
     request.post('/upload/', {name, file, creat_time});
+
+/**
+ * 请求图片
+ */
+export const reqPhoto = (image_name) =>
+    request.privatePost('/image_read/get_graph/', {image_name})
+
+
 
 /**
  * 验证码

@@ -45,6 +45,7 @@ export default class TaskListPage extends React.Component{
                 }
 
             },{
+                initialRouteName: "RecruitTab",
                 tabBarOptions:{
                     indicatorStyle: {
                         backgroundColor: "#121212",

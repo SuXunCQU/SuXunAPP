@@ -7,6 +7,9 @@ import { MapView } from "react-native-amap3d";
 import RNLocation from 'react-native-location';
 import NavigationUtil from '../../utils/NavigationUtil';
 import {connect} from 'react-redux';
+import Icon from "../../components/Icon";
+import Entypo from "react-native-vector-icons/Entypo";
+import {reqPhoto} from "../../api";
 
 RNLocation.configure({
     distanceFilter: 5, // Meters
@@ -28,6 +31,10 @@ class CurrentTaskHomePage extends React.Component {
             location: null,
             // 用户自身的路径
             coordinates: [],
+            clueBadgeOpacity: 1,
+            detailBadgeOpacity: 1,
+            orderBadgeOpacity: 1,
+            chatBadgeOpacity: 1,
             // 获取的路径
             lines : [
                 {
@@ -139,17 +146,13 @@ class CurrentTaskHomePage extends React.Component {
                 //
                 //     })
             }})
-
-        JPush.setLoggerEnable(true);
-        JPush.init();
-        JPush.getRegistrationID((result) => console.log(result));
-        JPush.addLocalNotification({
-            "messageID": `${this.messageCount++}`,
-            "title": "测试通知",
-            "content": "测试内容",
-        });
-
         this.mockPaths();
+
+        const item = this.props && this.props.joinedList && this.props.joinedList.item;
+        const response = await reqPhoto(`${item.lostinfo.incident_id}.jpg`);
+        this.setState({
+            "photoBase64": `data:image/jpg;base64,${response.result}`,
+        })
     }
 
     componentWillUnmount() {
@@ -201,10 +204,10 @@ class CurrentTaskHomePage extends React.Component {
     }
 
     drawPath = async (coordinate, type) => {
-        console.log(coordinate);
+        // console.log(coordinate);
         const url = `https://restapi.amap.com/v3/direction/walking?origin=${this.state.center.longitude},${this.state.center.latitude}&destination=${coordinate}&output=JSON&key=${GDKEY}`;
         const res = await this.dataStore.fetchData(url);
-        console.log(res);
+        // console.log(res);
         const response = res.data;
         const data = response.data ? response.data.data : response;
         if(data.status === "1"){
@@ -231,7 +234,7 @@ class CurrentTaskHomePage extends React.Component {
             }))
         }
         else if(type === "marker"){
-            console.log(_polylines)
+            // console.log(_polylines)
             this.setState(()=>({
                 "marker_polylines": _polylines,
             }))
@@ -271,6 +274,7 @@ class CurrentTaskHomePage extends React.Component {
                                     "latitude": center.latitude,
                                     "longitude": center.longitude,
                                 }}
+                                zoomLevel={15}
                                 style={styles.mapContainer}
                                 onLocation={this._onLocation}
                             >
@@ -319,19 +323,99 @@ class CurrentTaskHomePage extends React.Component {
                 </View>
 
                 <View style={styles.bottomNavigator}>
-                    <Icon iconName="chatbubbles" labelName="对话" style={{color: "#00e0c7",}} textStyle={{color: "#00e0c7"}} onPress={()=>{
-                        navigation.navigate("MessagePage");
-                    }}
-                    />
-                    <Icon iconName="md-newspaper" labelName="详情" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={()=>{
-                        navigation.navigate("MainDetailPage", {data: this.props.detailItem});
-                    }}/>
-                    <Icon iconName="alert" labelName="线索" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
-                        navigation.navigate("CluePage");
-                    }}/>
-                    <Icon iconName="md-megaphone" labelName="指令" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
-                        navigation.navigate("OrderPage");
-                    }}/>
+                    <View>
+                        <View style={{
+                            opacity: this.state.chatBadgeOpacity,
+                            width: 13,
+                            height: 13,
+                            justifyContent: "center",
+                            position: 'absolute',
+                            zIndex: 9,
+                            backgroundColor: "#FB3768",
+                            borderRadius: 6,
+                            right: -3,
+                            top: -1,
+                        }}>
+                            <Text style={[{fontSize: 10, color: "#fff", textAlign: "center",}]}>8</Text>
+                        </View>
+                        <Icon iconName="chatbubbles" labelName="对话" style={{color: "#00e0c7",}} textStyle={{color: "#00e0c7"}} onPress={()=>{
+                            this.setState({
+                                chatBadgeOpacity: 0,
+                            })
+                            navigation.navigate("MessagePage");
+                        }}/>
+                    </View>
+                    <View>
+                        <View style={{
+                            opacity: this.state.detailBadgeOpacity,
+                            width: 13,
+                            height: 13,
+                            justifyContent: "center",
+                            position: 'absolute',
+                            zIndex: 9,
+                            backgroundColor: "#FB3768",
+                            borderRadius: 6,
+                            right: -3,
+                            top: -1,
+                        }}>
+                            <Text style={[{fontSize: 10, color: "#fff", textAlign: "center",}]}>1</Text>
+                        </View>
+                        <Icon iconName="md-newspaper" labelName="详情" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={()=>{
+                            this.setState({
+                                detailBadgeOpacity: 0,
+                            })
+                            navigation.navigate("MainDetailPage", {data: this.props.detailItem, photoBase64: this.state.photoBase64});
+                        }}/>
+                    </View>
+                    <View>
+                        <View style={{
+                            opacity: this.state.clueBadgeOpacity,
+                            width: 13,
+                            height: 13,
+                            justifyContent: "center",
+                            position: 'absolute',
+                            zIndex: 9,
+                            backgroundColor: "#FB3768",
+                            borderRadius: 6,
+                            right: -3,
+                            top: -1,
+                        }}>
+                            <Text style={[{fontSize: 10, color: "#fff", textAlign: "center",}]}>7</Text>
+                        </View>
+                        <Icon iconName="alert" labelName="线索" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
+                            this.setState({
+                                clueBadgeOpacity: 0,
+                            })
+                            navigation.navigate("CluePage");
+                        }}/>
+                    </View>
+                    <View>
+                        <View style={{
+                            opacity: this.state.orderBadgeOpacity,
+                            width: 13,
+                            height: 13,
+                            justifyContent: "center",
+                            position: 'absolute',
+                            zIndex: 9,
+                            backgroundColor: "#FB3768",
+                            borderRadius: 6,
+                            right: -3,
+                            top: -1,
+                        }}>
+                            <Text style={[{fontSize: 10, color: "#fff", textAlign: "center",}]}>3</Text>
+                        </View>
+                        <Icon iconName="md-megaphone" labelName="指令" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
+                            this.setState({
+                                orderBadgeOpacity: 0,
+                            })
+                            navigation.navigate("OrderPage");
+                        }}/>
+                    </View>
+                    <View>
+                        <Icon iconName="md-megaphone" labelName="人脸比对" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
+                            navigation.navigate("FaceRecogPage");
+                        }}/>
+                    </View>
                 </View>
             </View>
         )
@@ -340,6 +424,7 @@ class CurrentTaskHomePage extends React.Component {
 
 const mapStateToProps = (state) => ({
     detailItem: state.taskItem.detailItem,
+    joinedList: state.joinedList,
 });
 export default connect(mapStateToProps)(CurrentTaskHomePage);
 

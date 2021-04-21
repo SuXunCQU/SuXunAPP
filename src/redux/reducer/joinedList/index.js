@@ -7,8 +7,8 @@ const defaultState = {};
  *      items: [],
  *      isLoading: false
  * }
- * @param {*} state 
- * @param {*} action 
+ * @param {*} state
+ * @param {*} action
  * @returns
  */
 export default function onAction(state=defaultState, action){
@@ -29,7 +29,11 @@ export default function onAction(state=defaultState, action){
                 ...state,
                 isLoading: true
             };
-
+        case Types.JOINEDLIST_ADD:
+            return {
+                ...state,
+                item: action.item,
+            }
         default:
             return state;
     }

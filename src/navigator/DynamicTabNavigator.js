@@ -8,11 +8,15 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Entypo from 'react-native-vector-icons/Entypo'
 import {BottomTabBar, createBottomTabNavigator} from 'react-navigation-tabs';
 import {createAppContainer} from 'react-navigation';
-import {Dimensions, LogBox, Text} from 'react-native';
+import {Dimensions, LogBox, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 import {createStackNavigator} from "react-navigation-stack";
 import ProfilePage from "../pages/personal/profile";
 import SettingPage from "../pages/personal/setting";
+import Icon from "../components/Icon";
+import actions from '../redux/action';
+import {reqLogin} from "../api";
+import Toast from "../utils/Toast";
 
 const {width, height, scale} = Dimensions.get("window");
 
@@ -41,11 +45,26 @@ const TABS = { // 在这里配置页面的路由
                 <Text style={{color: focused ? tintColor : "grey", fontSize: 12, alignSelf: "center"}}>任务列表</Text>
             ),
             tabBarIcon: ({tintColor, focused}) => (
-                <Entypo
-                    name={'add-to-list'}
-                    size={26}
-                    style={{color: focused ? tintColor : "grey"}}
-                />
+                <View>
+                    <View style={{
+                        width: 13,
+                        height: 13,
+                        justifyContent: "center",
+                        position: 'absolute',
+                        zIndex: 9,
+                        backgroundColor: "#FB3768",
+                        borderRadius: 6,
+                        right: -3,
+                        top: -1,
+                    }}>
+                        <Text style={[{fontSize: 10, color: "#fff", textAlign: "center",}]}>1</Text>
+                    </View>
+                    <Entypo
+                        name={'add-to-list'}
+                        size={26}
+                        style={{color: focused ? tintColor : "grey"}}
+                    />
+                </View>
             ),
         }
     },
@@ -56,11 +75,26 @@ const TABS = { // 在这里配置页面的路由
                 <Text style={{color: focused ? tintColor : "grey", fontSize: 12, alignSelf: "center"}}>当前任务</Text>
             ),
             tabBarIcon: ({tintColor, focused}) => (
-                <Entypo
-                    name={'location'}
-                    size={26}
-                    style={{color: focused ? tintColor : "grey"}}
-                />
+                <View>
+                    <View style={{
+                        width: 13,
+                        height: 13,
+                        justifyContent: "center",
+                        position: 'absolute',
+                        zIndex: 9,
+                        backgroundColor: "#FB3768",
+                        borderRadius: 6,
+                        right: -3,
+                        top: -1,
+                    }}>
+                        <Text style={[{fontSize: 10, color: "#fff", textAlign: "center",}]}>19</Text>
+                    </View>
+                    <Entypo
+                        name={'location'}
+                        size={26}
+                        style={{color: focused ? tintColor : "grey"}}
+                    />
+                </View>
             )
         }
     },
@@ -89,6 +123,10 @@ class DynamicTabNavigator extends React.Component {
         LogBox.ignoreAllLogs();
     }
 
+    async componentDidMount() {
+
+    }
+
     _tabNavigator() {
         // 性能优化，避免频繁创建导航器，因为用redux改变状态后会触发render函数，就会造成组件重新渲染的情况（如突然跳回首页之类的）
         if (this.Tabs) {
@@ -104,7 +142,7 @@ class DynamicTabNavigator extends React.Component {
                 tabBarComponent: (props) => {
                     return <TabBarComponent {...props} theme={this.props.theme}/>
                 },
-                initialRouteName: "CurrentTaskPage",
+                initialRouteName: "TaskListPage",
             }
         ));
     }
@@ -136,5 +174,9 @@ class TabBarComponent extends React.Component {
 // redux 里的 state 到页面中 props 的转换
 const mapStateToProps = (state) => ({
     theme: state.theme.color,
+    token: state.user.token,
 });
-export default connect(mapStateToProps)(DynamicTabNavigator);
+const mapDispatchToProps = (dispatch) => ({
+    setToken: (token) => dispatch(actions.setToken(token))
+})
+export default connect(mapStateToProps, mapDispatchToProps)(DynamicTabNavigator);

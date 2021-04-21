@@ -7,20 +7,31 @@ import NavigationUtil from '../../../utils/NavigationUtil';
 import {connect} from 'react-redux';
 import actions from '../../../redux/action';
 import {order_data} from '../../../utils/mockUtils';
+import {reqQueryOrderByKey} from "../../../api";
 
 const THEME_COLOR = "red";
 const {width, height, scale} = Dimensions.get("window");
 export default class OrderPage extends React.Component{
   constructor(props){
     super(props);
+    this.state = {
+
+    };
   }
 
-  componentDidMount() {
-    // this.loadData();
+  async componentDidMount() {
+    const response = await this.loadData();
+    console.log(response);
+    this.setState({
+      "orders": response.result,
+    })
   }
 
   loadData() {
-    // console.log(this.props && this.props.clueList);
+    const task_id = 2;
+    return reqQueryOrderByKey(task_id).then((response) => {
+      return response;
+    })
   }
 
   renderItem(data){
@@ -38,6 +49,9 @@ export default class OrderPage extends React.Component{
 
   render(){
     const {navigation} = this.props;
+    let {orders} = this.state;
+    if(!orders)
+      orders = [];
     let navigationBar = <NavigationBar
         leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
         title={'指令'}
@@ -47,7 +61,7 @@ export default class OrderPage extends React.Component{
         <View style={styles.container}>
           {navigationBar}
           <FlatList
-              data={order_data.items}
+              data={orders}
               renderItem={(data)=>this.renderItem(data)}
               keyExtractor={(item)=> ""+item.id}
               refreshControl={

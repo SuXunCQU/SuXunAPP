@@ -11,6 +11,7 @@ import OrderPage from "./tabs/OrderPage";
 import MainDetailPage from '../../components/ItemDetailPage';
 import ChatPage from './tabs/message/chat';
 import {Dimensions, StyleSheet, View} from "react-native";
+import FaceRecogPage from "./tabs/faceRecog/faceRecogPage";
 
 const {width, height, scale} = Dimensions.get("window");
 
@@ -21,7 +22,7 @@ class CurrentTaskPage extends React.Component {
                 CurrentTaskHomePage: {
                     screen: CurrentTaskHomePage,
                     navigationOptions: {
-                        title: `当前任务：搜寻${this.props.detailItem && this.props.detailItem.lost_name}`,
+                        title: `当前任务：${this.props.joinedList && this.props.joinedList.item.task_name}`,
                         headerStyle: GlobalStyle.headerStyle,
                         headerTitleStyle: GlobalStyle.headerTitleStyle,
                     }
@@ -55,6 +56,12 @@ class CurrentTaskPage extends React.Component {
                     navigationOptions: {
                         headerShown: false,
                     }
+                },
+                FaceRecogPage: {
+                    screen: FaceRecogPage,
+                    navigationOptions: {
+                        headerShown: false,
+                    }
                 }
 
             }
@@ -72,6 +79,7 @@ const mapDispatchToProps = (dispatch) => ({
 });
 const mapStateToProps = (state) => ({
     detailItem: state.taskItem.detailItem,
+    joinedList: state.joinedList,
 })
 export default connect(mapStateToProps, mapDispatchToProps)(CurrentTaskPage);
 

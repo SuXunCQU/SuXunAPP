@@ -8,7 +8,7 @@ const instance = axios.create({
     baseURL: BASE_URI,
 });
 
-const {state} = Store.getState();
+const state = Store.getState();
 
 // 添加请求拦截器
 instance.interceptors.request.use(function (config) {
@@ -37,26 +37,27 @@ export default {
     patch:instance.patch,
     delete:instance.delete,
     privateGet: (url, data = {}, options = {}) => {
-        const token = state.token;
+        const state = Store.getState();
+        const token = state.user.token;
         const headers = options.headers || {};
         return instance.get(url, {
             ...options,
             params: data,
             headers: {
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `Token ${token}`,
                 ...headers,
             },
         });
     },
     // post 自动带上token
     privatePost: (url, data = {}, options = {}) => {
-        console.log(state);
-        const token = state.token;
+        const state = Store.getState();
+        const token = state.user.token;
         const headers = options.headers || {};
         return instance.post(url, data, {
             ...options,
             headers: {
-                "Authorization": `Bearer ${token}`,
+                "Authorization": `Token ${token}`,
                 ...headers,
             },
         });

@@ -6,6 +6,7 @@ import {pxToDp, screenHeight} from "../../../utils/styleKits";
 import Toast from "../../../utils/Toast";
 import actions, {setPassword, setToken, setUsername} from "../../../redux/action";
 import {connect} from "react-redux";
+import {reqLogin} from "../../../api";
 
 class Index extends Component {
 
@@ -50,11 +51,11 @@ class Index extends Component {
         // 登录
         const username = '17815252259';
         const password = 'asd123';
-        // const res = await reqLogin(username, password);
-        const res = {
-            status: 0,
-            token: 111
-        }
+        const res = await reqLogin(username, password);
+        // const res = {
+        //     status: 0,
+        //     token: 111
+        // }
         console.log(res);
         if (res.status === 0) {
             this.props.setUsername(username);
