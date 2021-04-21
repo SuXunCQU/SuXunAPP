@@ -22,10 +22,8 @@ export default class App extends Component {
         console.log("init", res);
 
 
-
-
         // 极光登录
-        const res1 = await JMessage.login('18602368182', '123456');
+        const res1 = await JMessage.login('18602368180', '123456');
         console.log('login',res1);
     }
 

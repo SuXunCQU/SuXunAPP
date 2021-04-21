@@ -320,9 +320,8 @@ class CurrentTaskHomePage extends React.Component {
 
                 <View style={styles.bottomNavigator}>
                     <Icon iconName="chatbubbles" labelName="对话" style={{color: "#00e0c7",}} textStyle={{color: "#00e0c7"}} onPress={()=>{
-                        navigation.navigate("MessagePage");
-                    }}
-                    />
+                        navigation.navigate("MessagePage",{data: this.props.detailItem});
+                    }}/>
                     <Icon iconName="md-newspaper" labelName="详情" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={()=>{
                         navigation.navigate("MainDetailPage", {data: this.props.detailItem});
                     }}/>
