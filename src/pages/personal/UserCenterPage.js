@@ -5,7 +5,6 @@ import { createStackNavigator } from 'react-navigation-stack';
 import { createAppContainer } from 'react-navigation';
 import Profile from './profile'
 import Setting from './setting'
-import Update from './update'
 import { connect } from 'react-redux';
 import actions from '../../redux/action';
 
@@ -21,12 +20,6 @@ class UserCenterPage extends React.Component{
                 },
                 Setting: {
                     screen: Setting,
-                    navigationOptions:{
-                        headerShown: false,
-                    }
-                },
-                Update: {
-                    screen: Update,
                     navigationOptions:{
                         headerShown: false,
                     }

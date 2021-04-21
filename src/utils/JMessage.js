@@ -8,7 +8,7 @@ export default {
         console.log('JMessage.int');
         return new Promise((resolve, reject) => {
             JMessage.init({
-                'appkey': JGAPPKEY,
+                'appKey': JGAPPKEY,
                 'isOpenMessageRoaming': true,  // 是否漫游消息
                 'isProduction': false,
                 'channel': ''
@@ -42,16 +42,16 @@ export default {
 
     /**
      * 极光-发送文本消息
-     * @param {String} username 要接收信息的对象 收件人
+     * @param {String} groupId 要接收信息的对象 收件人
      * @param {String} text 文本内容
      * @param {Object} extras 要附带的参数
      */
-    sendTextMessage(username, text, extras = {}) {
+    sendTextMessage(groupId, text, extras = {}) {
         return new Promise((resolve, reject) => {
             // 消息的类型 单个 即可
-            const type = "single";
+            const type = "group";
             JMessage.sendTextMessage({
-                    type, username,
+                    type, groupId,
                     text, extras
                 },
                 resolve, reject)
@@ -112,7 +112,7 @@ export default {
      * @param usernameArray
      * @returns {Promise<unknown>}
      */
-    addGroupMembers(groupId,usernameArray) {
+    addGroupMembers(groupId, usernameArray) {
         return new Promise((resolve, reject) => {
             JMessage.addGroupAdmins({id: 'group_id', usernameArray: ['ex_username1', 'ex_username2'], appKey: JGAPPKEY},
                 () => {  //
@@ -133,22 +133,26 @@ export default {
      * @param usernameArray
      * @returns {Promise<unknown>}
      */
-    removeGroupMembers(groupId,usernameArray){
-      return new Promise((resolve,reject)=>{
-          JMessage.removeGroupMembers({ id: 'group_id', usernameArray: ['ex_username1', 'ex_username2'], appKey: JGAPPKEY },
-              () => {  //
-                  // do something.
+    removeGroupMembers(groupId, usernameArray) {
+        return new Promise((resolve, reject) => {
+            JMessage.removeGroupMembers({
+                    id: 'group_id',
+                    usernameArray: ['ex_username1', 'ex_username2'],
+                    appKey: JGAPPKEY
+                },
+                () => {  //
+                    // do something.
 
-              }, (error) => {
-                  let code = error.code
-                  let desc = error.description
-              })
-      })
+                }, (error) => {
+                    let code = error.code
+                    let desc = error.description
+                })
+        })
     },
 
     /**
      * 获取历史消息
-     * @param {String} username 要获取和谁的聊天记录
+     * @param {String} groupId 要获取和谁的聊天记录
      * @param {Number} from 从第几条开始获取
      * @param {Number} limit 一共要获取几条
      * 参数说明
@@ -160,15 +164,24 @@ export default {
      limit: 消息数。当 from = 0 并且 limit = -1 时，返回所有的历史消息。
      isDescend: 是否降序（消息时间戳从大到小排序），默认为 false。
      */
-    getHistoryMessages(username, from, limit) {
+    getHistoryMessagesGroup(groupId, from, limit) {
         return new Promise((resolve, reject) => {
             JMessage.getHistoryMessages({
-                    type: 'single', username,
-                    from, limit
+                    type: 'group', appKey: JGAPPKEY ,groupId:groupId, from: from, limit: limit, isDescend: false
                 },
                 resolve, reject)
         })
     },
+
+    getHistoryMessagesUser(username,from,limit){
+        return new Promise((resolve, reject) => {
+            JMessage.getHistoryMessages({
+                    type: 'single', username,appKey: JGAPPKEY ,from, limit, isDescend: false
+                },
+                resolve, reject)
+        })
+    },
+
     /**
      * 发送图片消息
      * @param {String} username 接受者的用户名
