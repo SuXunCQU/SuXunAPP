@@ -28,6 +28,7 @@ const window = Dimensions.get("window");
 
 let theMessageId = 1;
 
+
 // 负责创建各种类型的消息
 function constructNormalMessage() {
 
@@ -59,17 +60,16 @@ class TestRNIMUI extends Component {
 
 
     state = {
-        taskName: "寻找65岁老人李玉兰",
-        taskId: 1,
-        groupId: "",
+        groupId: '70231526',
     }
 
     constructor(props) {
         super(props);
-        let taskName = '测试';
+        const incident = this.props.navigation.state.params.data;
+        // console.log(incident);
         let navigationBar = <NavigationBar
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
-            title={taskName}
+            title={incident.lost_name}
             style={styles.header}
             rightButton={
                 <TouchableOpacity onPress={this.showMembers}>
@@ -109,36 +109,48 @@ class TestRNIMUI extends Component {
         this.resetMenu();
         console.log('componentDidMount');
 
-        const {groupId, taskId, taskName} = this.state;
+        const {groupId} = this.state;
+        const incident = this.props.navigation.state.params.data;
 
         // 1. 判断groupId是否为空，为空则创建群组
         if (!groupId) {
-            await JMessage.creatGroup();
+            await JMessage.creatGroup("搜寻"+incident.lost_name, incident.lost_id);
         }
 
         // 2. 加入群组
+        const res = await JMessage.addGroupMembers(groupId,['18602368180']);
+        console.log(res);
 
 
-        // 3. 获取群组消息
-        const res = await JMessage.creatGroup(taskName, taskId);
         // const res = await JMessage.getGroupInfo(taskId);
 
-        console.log(res);
+        // console.log(res);
         AuroraIController.addMessageListDidLoadListener(this.messageListDidLoadEvent);
     }
 
 
     messageListDidLoadEvent() {
-        // this.getHistoryMessage();
+        this.getHistoryMessage();
     }
 
     // 获取历史消息
     getHistoryMessage = async () => {
         // 1 获取极光的历史消息
         const username = "18602368180";
+        const groupId = '70231526';
         const from = 1;
         const limit = 1000;
-        const historys = await JMessage.getHistoryMessages(username, from, limit);
+        console.log('groupId', groupId);
+        console.log("getHistoryMsg11");
+        // const historys = await JMessage.getHistoryMessagesUser(username, from, limit);
+        // console.log("-------------------------------------");
+        // console.log(historys);
+        // console.log("-------------------------------------");
+
+        const historys = await JMessage.getHistoryMessagesGroup(groupId, from, limit);
+        console.log("-------------------------------------");
+        console.log(historys);
+        console.log("-------------------------------------");
 
         // 消息数组
         const messages = [];
@@ -150,10 +162,10 @@ class TestRNIMUI extends Component {
             // 接收者头像  this.props.route.params.header
             // 如何判断发送者和接收者
             // 获取到消息对象中的一个 from.username 等于当前的登录用户 guid
-            if (v.from.username === this.props.UserStore.user.guid) {
+            if (v.from.username === this.props.user.username) {
                 // 当前消息是输入发送者的 当前登录用户的
                 message.isOutgoing = true;
-                message.fromUser.avatarPath = BASE_URI + this.props.user.header;
+                message.fromUser.avatarPath = 'http://img.fdchen.host/suxun/member/avatar.jpg';
             } else {
                 message.isOutgoing = false;
                 // message.fromUser.avatarPath=BASE_URI + this.props.route.params.header;
@@ -288,38 +300,48 @@ class TestRNIMUI extends Component {
 
     onPullToRefresh = () => {
         console.log("on pull to refresh");
-        let messages = [];
-        for (let i = 0; i < 14; i++) {
-            let message = constructNormalMessage();
-            // if (index%2 == 0) {
-            message.msgType = "text";
-            message.text = "" + i;
-            // }
+        // let messages = [];
+        // for (let i = 0; i < 14; i++) {
+        //     let message = constructNormalMessage();
+        //     // if (index%2 == 0) {
+        //     message.msgType = "text";
+        //     message.text = "" + i;
+        //     // }
+        //
+        //     if (i % 3 == 0) {
+        //         message.msgType = "video";
+        //         message.text = "" + i;
+        //         message.mediaPath = "/storage/emulated/0/ScreenRecorder/screenrecorder.20180323101705.mp4";
+        //         message.duration = 12;
+        //     }
+        //     messages.push(message);
+        // }
+        // AuroraIController.insertMessagesToTop(messages);
+        // if (Platform.OS === "android") {
+        //     this.refs["MessageList"].refreshComplete();
+        // }
 
-            if (i % 3 == 0) {
-                message.msgType = "video";
-                message.text = "" + i;
-                message.mediaPath = "/storage/emulated/0/ScreenRecorder/screenrecorder.20180323101705.mp4";
-                message.duration = 12;
-            }
-            messages.push(message);
-        }
-        AuroraIController.insertMessagesToTop(messages);
-        if (Platform.OS === "android") {
-            this.refs["MessageList"].refreshComplete();
-        }
+        this.getHistoryMessage();
 
     };
 
     // 发送文本消息
-    onSendText = (text) => {
-        let message = constructNormalMessage();
-        let evenmessage = constructNormalMessage();
-
-        message.msgType = "text";
-        message.text = text;
-
+    onSendText = async (text) => {
+        const message = constructNormalMessage()
+        message.msgType = 'text'
+        message.text = text
+        message.fromUser.avatarPath = "http://img.fdchen.host/suxun/member/avatar.jpg";
         AuroraIController.appendMessages([message]);
+
+        // 极光来实现 发送文本
+        const username = this.props.route.params.guid;
+        const groupId = '70231526';
+        // 额外的数据
+        const extras = {user: JSON.stringify(this.props.user.username)};
+        const res = await JMessage.sendTextMessage(groupId, text, extras);
+        console.log("++++++++++++==");
+        console.log(res);
+        console.log("++++++++++++==");
     };
 
     onTakePicture = (media) => {
@@ -462,7 +484,9 @@ class TestRNIMUI extends Component {
     }
 
     render() {
-        const {taskName, taskId} = this.state;
+        const incident = this.props.navigation.state.params.data;
+        const taskName ="搜寻"+ incident.lost_name;
+        const taskId = incident.lost_id;
         let navigationBar = <NavigationBar
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
             titleView={<Text>taskName</Text>}
@@ -482,7 +506,7 @@ class TestRNIMUI extends Component {
                     {ViewUtil.getLeftBackButton(() => this.onBack())}
                     <Button
                         style={styles.sendCustomBtn}
-                        title="寻找65岁老人李玉兰"
+                        title={taskName}
                         titleStyle={{color: '#121212'}}
                         onPress={() => console.log('title')}
                     >
@@ -536,41 +560,39 @@ class TestRNIMUI extends Component {
                     dateTextColor={"#666666"}
                     isShowDisplayName={false}
                 />
-                <InputView
-                    style={this.state.inputViewLayout}
-                    ref="ChatInput"
-                    onSendText={this.onSendText}
-                    onTakePicture={this.onTakePicture}
-                    onStartRecordVoice={this.onStartRecordVoice}
-                    onFinishRecordVoice={this.onFinishRecordVoice}
-                    onCancelRecordVoice={this.onCancelRecordVoice}
-                    onStartRecordVideo={this.onStartRecordVideo}
-                    onFinishRecordVideo={this.onFinishRecordVideo}
-                    onSendGalleryFiles={this.onSendGalleryFiles}
-                    onSwitchToEmojiMode={this.onSwitchToEmojiMode}
-                    onSwitchToMicrophoneMode={this.onSwitchToMicrophoneMode}
-                    onSwitchToGalleryMode={this.onSwitchToGalleryMode}
-                    onSwitchToCameraMode={this.onSwitchToCameraMode}
-                    onShowKeyboard={this.onShowKeyboard}
-                    onTouchEditText={this.onTouchEditText}
-                    onFullScreen={this.onFullScreen}
-                    onRecoverScreen={this.onRecoverScreen}
-                    onSizeChange={this.onInputViewSizeChange}
-                    closeCamera={this.onCloseCamera}
-                    switchCameraMode={this.switchCameraMode}
-                    showSelectAlbumBtn={true}
-                    showRecordVideoBtn={false}
-                    onClickSelectAlbum={this.onClickSelectAlbum}
-                    inputPadding={{left: 30, top: 10, right: 10, bottom: 10}}
-                    galleryScale={0.6}//default = 0.5
-                    compressionQuality={0.6}
-                    cameraQuality={0.7}//default = 0.5
-                    customLayoutItems={{
-                        left: [],
-                        right: ["send"],
-                        bottom: ["voice", "gallery", "emoji", "camera"],
-                    }}
-                    chatInputBackgroundColor={Color.button.inActive}  // 失效API
+                <InputView style={this.state.inputViewLayout}
+                           ref="ChatInput"
+                           onSendText={this.onSendText}
+                           onTakePicture={this.onTakePicture}
+                           onStartRecordVoice={this.onStartRecordVoice}
+                           onFinishRecordVoice={this.onFinishRecordVoice}
+                           onCancelRecordVoice={this.onCancelRecordVoice}
+                           onStartRecordVideo={this.onStartRecordVideo}
+                           onFinishRecordVideo={this.onFinishRecordVideo}
+                           onSendGalleryFiles={this.onSendGalleryFiles}
+                           onSwitchToEmojiMode={this.onSwitchToEmojiMode}
+                           onSwitchToMicrophoneMode={this.onSwitchToMicrophoneMode}
+                           onSwitchToGalleryMode={this.onSwitchToGalleryMode}
+                           onSwitchToCameraMode={this.onSwitchToCameraMode}
+                           onShowKeyboard={this.onShowKeyboard}
+                           onTouchEditText={this.onTouchEditText}
+                           onFullScreen={this.onFullScreen}
+                           onRecoverScreen={this.onRecoverScreen}
+                           onSizeChange={this.onInputViewSizeChange}
+                           closeCamera={this.onCloseCamera}
+                           switchCameraMode={this.switchCameraMode}
+                           showSelectAlbumBtn={true}
+                           showRecordVideoBtn={false}
+                           onClickSelectAlbum={this.onClickSelectAlbum}
+                           inputPadding={{left: 30, top: 10, right: 10, bottom: 10}}
+                           galleryScale={0.6}//default = 0.5
+                           compressionQuality={0.6}
+                           cameraQuality={0.7}//default = 0.5
+                           customLayoutItems={{
+                               left: [],
+                               right: ['send'],
+                               bottom: ['voice', 'gallery', 'emoji', 'camera']
+                           }}
                 />
             </View>
         );
@@ -584,11 +606,11 @@ const styles = StyleSheet.create({
         borderWidth: Size.borderWidth,
         borderColor: Color.border,
         ...Size.header,
-        backgroundColor:"white",
+        backgroundColor: "white",
         justifyContent: 'space-between',
         paddingRight: pxToDp(10),
     },
-    placeholder:{
+    placeholder: {
         ...Size.header,
     },
     sendCustomBtn: {

@@ -97,7 +97,7 @@ export default createAppContainer(createSwitchNavigator(
     {
         // Init: ChatNavigator,
         Init: LoginNavigator,
-        Main: ChatNavigator,
+        Main: MainNavigator,
     },
     {
         navigationOptions: {
