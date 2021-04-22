@@ -111,10 +111,11 @@ class TestRNIMUI extends Component {
 
         const {groupId} = this.state;
         const incident = this.props.navigation.state.params.data;
+        console.log(incident);
 
         // 1. 判断groupId是否为空，为空则创建群组
         if (!groupId) {
-            await JMessage.creatGroup("搜寻"+incident.lost_name, incident.lost_id);
+            await JMessage.creatGroup(incident.task_name);
         }
 
         // 2. 加入群组
@@ -485,8 +486,8 @@ class TestRNIMUI extends Component {
 
     render() {
         const incident = this.props.navigation.state.params.data;
-        const taskName ="搜寻"+ incident.lost_name;
-        const taskId = incident.lost_id;
+        const taskName = incident.task_name;
+        const taskId = incident.task_id;
         let navigationBar = <NavigationBar
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
             titleView={<Text>taskName</Text>}
@@ -530,22 +531,12 @@ class TestRNIMUI extends Component {
                     style={this.state.messageListLayout}
                     ref="MessageList"
                     // isAllowPullToRefresh={this.state.isAllowPullToRefresh}
-                    refreshControl={
-                        <RefreshControl
-                            refreshing={true}
-                            onRefresh={this.onPullToRefresh}
-                            tintColor="black"
-                            colors={["red", "green"]}
-                            // size={RefreshControl.SIZE.LARGE}
-                        />
-                    }
                     onAvatarClick={this.onAvatarClick}
                     onMsgClick={this.onMsgClick}
                     onStatusViewClick={this.onStatusViewClick}
                     onTouchMsgList={this.onTouchMsgList}
                     onTapMessageCell={this.onTapMessageCell}
                     onBeginDragMessageList={this.onBeginDragMessageList}
-                    onPullToRefresh={this.onPullToRefresh}
                     avatarSize={{width: 50, height: 50}}
                     avatarCornerRadius={25}
                     messageListBackgroundColor={"#f3f3f3"}

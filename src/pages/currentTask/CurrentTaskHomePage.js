@@ -82,16 +82,47 @@ class CurrentTaskHomePage extends React.Component {
                     ]
                 },
             ],
-            clue_markers: [{
+            clue_markers: [
+                {
                 "coordinate":{
                     "latitude": 29.71628,
                     "longitude": 106.64223,
                 },
                 "title": "重庆西站"
-            }],
+                },
+                {
+                    "coordinate":{
+                        "latitude": 29.533085,
+                        "longitude": 106.508156,
+                    },
+                    "title": "重庆医科大学"
+                },
+                {
+                    "coordinate":{
+                        "latitude": 29.622889,
+                        "longitude": 106.271881,
+                    },
+                    "title": "水天池景区"
+                },
+                {
+                    "coordinate":{
+                        "latitude": 29.514042,
+                        "longitude": 106.288033,
+                    },
+                    "title": "重庆射击射箭运动管理中心"
+                },
+                {
+                    "coordinate":{
+                        "latitude": 29.504015,
+                        "longitude": 106.22451,
+                    },
+                    "title": "璧山站"
+                },
+            ],
             polylines: [],
             marker_polylines: [],
         }
+
     }
 
     async componentDidMount() {
@@ -303,7 +334,13 @@ class CurrentTaskHomePage extends React.Component {
                                 {/*  标记部分  */}
                                 {this.state.clue_markers && this.state.clue_markers.length ?
                                     this.state.clue_markers.map((item, index) => {
-                                        return <MapView.Marker title={item.title} coordinate={item.coordinate} key={index} onPress={() => this.markerOnPress(item.coordinate)}/>
+                                        return <MapView.Marker
+                                            title={item.title}
+                                            coordinate={item.coordinate}
+                                            color={"#121212"}
+                                            key={index}
+                                            onPress={() => this.markerOnPress(item.coordinate)}
+                                        />
                                     })
                                     : null
                                 }
@@ -342,7 +379,7 @@ class CurrentTaskHomePage extends React.Component {
                             this.setState({
                                 chatBadgeOpacity: 0,
                             })
-                            navigation.navigate("MessagePage");
+                            navigation.navigate("MessagePage", {data: this.props.joinedList.item});
                         }}/>
                     </View>
                     <View>
@@ -412,7 +449,7 @@ class CurrentTaskHomePage extends React.Component {
                         }}/>
                     </View>
                     <View>
-                        <Icon iconName="md-megaphone" labelName="人脸比对" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
+                        <Icon iconName="camera" labelName="人脸比对" style={{color: "#00e0c7"}} textStyle={{color: "#00e0c7"}} onPress={() => {
                             navigation.navigate("FaceRecogPage");
                         }}/>
                     </View>

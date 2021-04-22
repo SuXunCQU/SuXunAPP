@@ -10,7 +10,7 @@ import {
     Button,
     Linking,
     Alert,
-    TouchableHighlight, FlatList
+    TouchableHighlight, FlatList, TextInput
 } from 'react-native';
 import {Carousel, Toast, Modal, Provider,} from '@ant-design/react-native';
 import NavigationUtil from "../utils/NavigationUtil";
@@ -27,6 +27,8 @@ import JPush from "./jpush/JPush";
 import {reqQueryTaskMemberByKey} from "../api";
 import {connect} from "react-redux";
 import actions from "../redux/action";
+import {TextInputLayout} from "rn-textinputlayout";
+import {launchImageLibrary} from "react-native-image-picker";
 
 const labels = ["启动", "进行", "完成/暂缓"];
 const configs = {
@@ -61,6 +63,9 @@ class ItemDetailPage extends React.Component {
             modalVisible: false,
             alertVisible: false,
             successVisible: false,
+            imageObjs: [
+
+            ]
         }
     }
 
@@ -88,6 +93,11 @@ class ItemDetailPage extends React.Component {
         JPush.setLoggerEnable(true);
         JPush.init();
         JPush.getRegistrationID((result) => console.log(result));
+        // JPush.addLocalNotification({
+        //     "messageID": "1",
+        //     "title": "有新任务正在招募中！",
+        //     "content": `您好，您附近有新的走失事件发生，走失者信息如下，姓名：徐海豹，性别：男，年龄：58，走失时间：2003/6/23 22:53，走失地点：河北省 衡水市 武强县。请进入“速寻”APP查看任务详情，任务级别：二级。`,
+        // });
     }
 
     render() {
@@ -250,7 +260,6 @@ class ItemDetailPage extends React.Component {
                                     labels={labels}
                                 />
                             </View>
-
                             {type === "recruit" ? (
                                 <View style={styles.buttonContainer}>
                                     <View style={{flex:1, marginLeft: 20, marginRight: 10}}>
@@ -287,6 +296,45 @@ class ItemDetailPage extends React.Component {
                         <View style={styles.modalView}>
                             <View style={styles.textContainer}>
                                 <Text style={{fontWeight: "bold"}}>请再次确认操作</Text>
+                            </View>
+                            <View style={styles.textCardContainer}>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder={'请输入原因'}
+                                    textAlignVertical={'top'}
+                                />
+                            </View>
+                            <View style={{height: 100}}>
+                                {/* 已上传的图片 */}
+                                {this.state.imageObjs.length ? (
+                                    <FlatList
+                                        style={{width, flexGrow: 0,}}
+                                        contentContainerStyle={{justifyContent: "center"}}
+                                        numColumns={3}
+                                        data={this.state.imageObjs}
+                                        renderItem={(item, index) => {
+                                            return (
+                                                <View style={styles.imageContainer}>
+                                                    <View style={styles.textContainer} >
+                                                        <Image source={{uri: item.item.fileURI}} style={{width: "100%", height: "100%"}}/>
+                                                    </View>
+                                                </View>
+                                            )
+                                        }}
+                                        keyExtractor={(item, index) => index}
+                                    />
+                                ) : null}
+
+                                {/* 上传图片按钮 */}
+                                <View style={styles.imageContainer}>
+                                    <TouchableOpacity
+                                        onPress={() => launchImageLibrary(this.options, this.selectPhoto)}
+                                    >
+                                        <View style={styles.textContainer}>
+                                            <Feather name={"image"} style={{fontSize: 80, width: "100%", height: "100%", textAlign: "center"}}/>
+                                        </View>
+                                    </TouchableOpacity>
+                                </View>
                             </View>
 
                             <View style={{...styles.buttonContainer, marginVertical: 0}}>
@@ -334,7 +382,7 @@ class ItemDetailPage extends React.Component {
                         <View style={styles.modalView}>
                             <View style={styles.textContainer}>
                                 <AntDesign name={"checkcircleo"} style={{color: "green", fontSize: 32, marginRight: 16}}/>
-                                <Text>加入成功</Text>
+                                <Text>提交成功</Text>
                             </View>
 
                             <View style={{...styles.buttonContainer, marginVertical: 0}}>
@@ -567,5 +615,10 @@ const styles = StyleSheet.create({
         shadowRadius: 1,
         // android的阴影
         elevation: 5,
-    }
+    },
+    textInput: {
+        width: 0.65 * width,
+        marginTop: 10,
+        fontSize: 14,
+    },
 });

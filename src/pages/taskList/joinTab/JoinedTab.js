@@ -11,6 +11,11 @@ const THEME_COLOR = 'red';
 class JoinedTab extends React.Component{
     constructor(props){
         super(props);
+        this.setState({
+            imageObjs: [
+
+            ]
+        })
     }
 
     renderItem(data){

@@ -71,11 +71,11 @@ class TaskItem extends Component {
                 }}>
                 <View style={styles.itemContainer}>
                     <View style={styles.topContainer}>
-                        <View style={[styles.header, {borderLeftColor: this.labelColor[item.level] || this.labelColor[0]}]}>
+                        <View style={[styles.header, {borderLeftColor: this.labelColor[Math.floor(item.task_level / 4)] || this.labelColor[0]}]}>
                             <Text style={{fontWeight: "bold", width: 0.70 * width}}>{lostinfo.lost_place}{lostinfo.lost_age}岁{lostinfo.lost_name}走失</Text>
                             <Label
-                                labelName={this.labelName[item.level] || this.labelName[0]}
-                                labelColor={this.labelColor[item.level] || this.labelColor[0]}
+                                labelName={this.labelName[Math.floor(item.task_level / 4)] || this.labelName[0]}
+                                labelColor={this.labelColor[Math.floor(item.task_level / 4)] || this.labelColor[0]}
                             />
                         </View>
                         <View style={styles.descriptionContainer}>

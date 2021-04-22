@@ -16,6 +16,8 @@ import NavigationBar from "../../../../components/NavigationBar";
 import NavigationUtil from "../../../../utils/NavigationUtil";
 import ViewUtil from '../../../../utils/ViewUtil';
 import Feather from 'react-native-vector-icons/Feather';
+import AntDesign from "react-native-vector-icons/AntDesign";
+import {Modal, Provider} from "@ant-design/react-native";
 
 const {width, height, scale} = Dimensions.get("window");
 export default class NewCluePage extends Component {
@@ -28,6 +30,7 @@ export default class NewCluePage extends Component {
           fileName = response.fileName || 'cash.jpg';
           fileType = response.type;
       } */
+      successVisible: false,
       imageObjs: [
 
       ]
@@ -81,6 +84,11 @@ export default class NewCluePage extends Component {
       return(
         <TouchableOpacity
           style={styles.button}
+          onPress={()=>{
+            this.setState({
+              successVisible: true,
+            })
+          }}
         >
           <Text>提交</Text>
         </TouchableOpacity>
@@ -94,52 +102,82 @@ export default class NewCluePage extends Component {
     />
 
     return (
-      <View style={styles.container}>
-        {navigationBar}
-        <View style={styles.textCardContainer}>
-          <TextInputLayout
-              style={styles.inputLayout}
-          >
-            <TextInput
-                style={styles.textInput}
-                placeholder={'线索内容'}
-                multiline
-                textAlignVertical={'top'}
-            />
-          </TextInputLayout>
-        </View>
+        <Provider>
+          <View style={styles.container}>
+            {navigationBar}
+            <View style={styles.textCardContainer}>
+              <TextInputLayout
+                  style={styles.inputLayout}
+              >
+                <TextInput
+                    style={styles.textInput}
+                    placeholder={'线索内容'}
+                    multiline
+                    textAlignVertical={'top'}
+                />
+              </TextInputLayout>
+            </View>
 
-        {/* 已上传的图片 */}
-        {this.state.imageObjs.length ? (
-              <FlatList
-                  style={{width, flexGrow: 0,}}
-                  contentContainerStyle={{justifyContent: "center"}}
-                  numColumns={3}
-                  data={this.state.imageObjs}
-                  renderItem={(item, index) => {
-                    return (
-                        <View style={styles.imageContainer}>
-                          <View style={styles.textContainer} >
-                            <Image source={{uri: item.item.fileURI}} style={{width: "100%", height: "100%"}}/>
+            {/* 已上传的图片 */}
+            {this.state.imageObjs.length ? (
+                <FlatList
+                    style={{width, flexGrow: 0,}}
+                    contentContainerStyle={{justifyContent: "center"}}
+                    numColumns={3}
+                    data={this.state.imageObjs}
+                    renderItem={(item, index) => {
+                      return (
+                          <View style={styles.imageContainer}>
+                            <View style={styles.textContainer} >
+                              <Image source={{uri: item.item.fileURI}} style={{width: "100%", height: "100%"}}/>
+                            </View>
                           </View>
-                        </View>
-                    )
-                  }}
-                  keyExtractor={(item, index) => index}
-              />
+                      )
+                    }}
+                    keyExtractor={(item, index) => index}
+                />
             ) : null}
 
-        {/* 上传图片按钮 */}
-        <View style={styles.imageContainer}>
-          <TouchableOpacity
-              onPress={() => launchImageLibrary(this.options, this.selectPhoto)}
-          >
-              <View style={styles.textContainer}>
-                <Feather name={"image"} style={{fontSize: 80, width: "100%", height: "100%", textAlign: "center"}}/>
+            {/* 上传图片按钮 */}
+            <View style={styles.imageContainer}>
+              <TouchableOpacity
+                  onPress={() => launchImageLibrary(this.options, this.selectPhoto)}
+              >
+                <View style={styles.textContainer}>
+                  <Feather name={"image"} style={{fontSize: 80, width: "100%", height: "100%", textAlign: "center"}}/>
+                </View>
+              </TouchableOpacity>
+            </View>
+
+            <Modal
+                animationType="slide"
+                visible={this.state.successVisible}
+                transparent
+                style={{backgroundColor: "transparent"}}
+
+            >
+              <View style={styles.modalView}>
+                <View style={styles.textContainer}>
+                  <AntDesign name={"checkcircleo"} style={{color: "green", fontSize: 32, marginRight: 16}}/>
+                  <Text>提交成功</Text>
+                </View>
+
+                <View style={{...styles.buttonContainer, marginVertical: 0}}>
+                  <TouchableOpacity
+                      style={{ ...styles.openButton, backgroundColor: "#2196F3", flex: 1 }}
+                      onPress={() => {
+                        this.setState((prevState) => ({
+                          successVisible: false
+                        }))
+                      }}
+                  >
+                    <Text style={styles.textStyle}>确认</Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-          </TouchableOpacity>
-        </View>
-      </View>
+            </Modal>
+          </View>
+        </Provider>
     );
   }
 
@@ -233,5 +271,58 @@ const styles = StyleSheet.create({
   },
   uploadImagesContainer:{
     width: "100%"
-  }
+  },
+  buttonContainer: {
+    marginVertical: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  modalView: {
+    backgroundColor: "#fefefe",
+    borderRadius: 20,
+    paddingVertical: 10,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5
+  },
+  openButton: {
+    width: "100%",
+    backgroundColor: "#1890ff",
+    borderRadius: 20,
+    padding: 10,
+    elevation: 2,
+    marginTop: 20,
+  },
+  textStyle: {
+    color: "white",
+    fontWeight: "bold",
+    textAlign: "center",
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center"
+  },
+  phoneCardContainer:{
+    width: 0.7 * width,
+    height: 50,
+    backgroundColor: "#fefefe",
+    borderWidth: 1 / scale,
+    borderColor: "#e8e8e8",
+    borderRadius: 10,
+    marginBottom: 10,
+    // ios的阴影
+    shadowColor: 'gray',
+    shadowOffset: {width: 0.5, height: 0.5},
+    shadowOpacity: 0.4,
+    shadowRadius: 1,
+    // android的阴影
+    elevation: 5,
+  },
 })

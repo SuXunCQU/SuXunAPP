@@ -22,16 +22,24 @@ class RecruitTab extends React.Component{
 
     componentDidMount() {
         this.loadData();
+        // JPush.setLoggerEnable(true);
+        // JPush.init();
+        // JPush.getRegistrationID((result) => console.log(result));
+        // JPush.addLocalNotification({
+        //     "messageID": "2",
+        //     "title": "任务完成",
+        //     "content": `您好，寻找搜寻58岁老人徐海豹的任务已经完成，请各位队员自行返回，注意安全！`,
+        // });
     }
 
     loadData = async () => {
         console.log(this.props.token);
         if(this.props.token){
             console.log("已有token");
-            const result = await reqTasksnIncidents();
-            console.log(result);
+            const response = await reqTasksnIncidents();
+            console.log(response);
             this.setState({
-                incidents: result,
+                incidents: response.result,
             })
         } else{
             const username = '17815252256';
@@ -56,8 +64,10 @@ class RecruitTab extends React.Component{
         }
     }
 
-    renderItem(data, index){
+    renderItem(data){
         const item = data.item;
+        if(data.index === 0 || data.index === 3)
+            return;
         return(
             <TaskItem
                 item={item}
@@ -87,7 +97,7 @@ class RecruitTab extends React.Component{
                 colors={['#00E0C7', '#009394']}
                 style={styles.container}
             >
-                <View style={{paddingVertical: 12, backgroundColor: "#dc0000", width: "100%", display: "flex", alignItems: "center"}}><Text>有最新救援任务！</Text></View>
+                <View style={{paddingVertical: 12, backgroundColor: "#ff3333", width: "100%", display: "flex", alignItems: "center"}}><Text style={{color: "#fefefe"}}>有最新救援任务！</Text></View>
                 <FlatList
                     data={recruitList.items}
                     renderItem={(data, index)=>this.renderItem(data)}

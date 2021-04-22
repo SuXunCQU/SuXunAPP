@@ -130,4 +130,5 @@ const styles = StyleSheet.create({
         elevation: 5,
         height: 50,
     },
+
 });
