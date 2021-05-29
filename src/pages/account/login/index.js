@@ -49,8 +49,8 @@ class Index extends Component {
      */
     submit = async () => {
         // 登录
-        const username = '17815252256';
-        const password = 'asd123';
+        const username = '18386030163';
+        const password = '8bI9O6V0xjY4';
         const res = await reqLogin(username, password);
         // const res = {
         //     status: 0,
@@ -89,6 +89,10 @@ class Index extends Component {
     };
 
     render() {
+        const token = this.props.token;
+        if(token){
+            this.props.navigation.navigate("Main");
+        }
         return (
             <View>
                 {/* 0.0  状态栏 开始 */}

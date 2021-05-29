@@ -11,11 +11,11 @@ const THEME_COLOR = 'red';
 class JoinedTab extends React.Component{
     constructor(props){
         super(props);
-        this.setState({
+        this.state = {
             imageObjs: [
 
             ]
-        })
+        };
     }
 
     renderItem(data){
@@ -41,13 +41,15 @@ class JoinedTab extends React.Component{
             <LinearGradient
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                colors={['#00E0C7', '#009394']}
+                colors={['#88d6c0', '#88e7bd']}
                 style={styles.container}
             >
                 <FlatList
-                    data={[joinedList.item]}
+                    data={joinedList && [joinedList.item]}
                     renderItem={(data)=>this.renderItem(data)}
-                    keyExtractor={(item) => item && item.task_id}
+                    keyExtractor={(item) => {
+                        return item && item.task_id;
+                    }}
                     refreshControl={
                         <RefreshControl
                             title={'Loading'}

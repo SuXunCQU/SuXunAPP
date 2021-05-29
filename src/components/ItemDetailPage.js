@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {createRef} from 'react';
 import {
     View,
     Text,
@@ -7,12 +7,17 @@ import {
     TouchableOpacity,
     Dimensions,
     ScrollView,
-    Button,
     Linking,
     Alert,
-    TouchableHighlight, FlatList, TextInput
+    TouchableHighlight,
+    FlatList,
+    TextInput,
+    ToastAndroid, PermissionsAndroid
 } from 'react-native';
-import {Carousel, Toast, Modal, Provider,} from '@ant-design/react-native';
+import CameraRoll from "@react-native-community/cameraroll";
+import RNFS from "react-native-fs";
+import {Carousel, Toast, Modal, Provider, Button} from '@ant-design/react-native';
+import QRCode from 'react-native-qrcode-svg';
 import NavigationUtil from "../utils/NavigationUtil";
 import NavigationBar from './NavigationBar'
 import ViewUtil from '../utils/ViewUtil';
@@ -29,6 +34,7 @@ import {connect} from "react-redux";
 import actions from "../redux/action";
 import {TextInputLayout} from "rn-textinputlayout";
 import {launchImageLibrary} from "react-native-image-picker";
+import LinearGradient from "react-native-linear-gradient";
 
 const labels = ["启动", "进行", "完成/暂缓"];
 const configs = {
@@ -63,10 +69,14 @@ class ItemDetailPage extends React.Component {
             modalVisible: false,
             alertVisible: false,
             successVisible: false,
+            qrcodeVisible: false,
+            showImagePicker: false,
+            showReason: false,
             imageObjs: [
 
             ]
         }
+        this.svg = React.createRef();
     }
 
     phoneCall = (phoneNumber) => {
@@ -89,7 +99,55 @@ class ItemDetailPage extends React.Component {
         }))
     }
 
-    componentDidMount() {
+    selectPhoto = (response) => {
+        if (!response.error) {
+            if (response.didCancel) {
+                return;
+            }
+            // console.log(response);
+            const source = {uri: response.uri};
+            this.setState((prevState) => {
+                let imageObjs = prevState.imageObjs;
+                imageObjs.push({
+                    // base64: response.base64,
+                    fileURI: response.uri,
+                    fileName: response.fileName || 'cash.jpg',
+                    fileType: response.type,
+                });
+                return {imageObjs: imageObjs}
+            }, () => {
+                console.log(this.state.imageObjs);
+            })
+            this.setState({
+                uploadImage: source,
+                showUploadIcon: false,
+            })
+        }
+    }
+
+    generateQRcode(){
+        this.setState(() => ({
+            qrcodeVisible: true
+        }))
+    }
+
+    saveQrToDisk() {
+        this.svg.toDataURL((data) => {
+            RNFS.writeFile(RNFS.CachesDirectoryPath+"/走失者信息.png", data, 'base64')
+                .then((success) => {
+                    return CameraRoll.saveToCameraRoll(RNFS.CachesDirectoryPath+"/走失者信息.png", 'photo')
+                })
+                .then(() => {
+                    this.setState({ busy: false, imageSaved: true  })
+                    ToastAndroid.show('二维码已保存至相册', ToastAndroid.SHORT)
+                })
+                .catch((error) => {
+                    console.log(error.message);
+                })
+        })
+    }
+
+    async componentDidMount() {
         JPush.setLoggerEnable(true);
         JPush.init();
         JPush.getRegistrationID((result) => console.log(result));
@@ -98,11 +156,28 @@ class ItemDetailPage extends React.Component {
         //     "title": "有新任务正在招募中！",
         //     "content": `您好，您附近有新的走失事件发生，走失者信息如下，姓名：徐海豹，性别：男，年龄：58，走失时间：2003/6/23 22:53，走失地点：河北省 衡水市 武强县。请进入“速寻”APP查看任务详情，任务级别：二级。`,
         // });
+
+
+        const granted = await PermissionsAndroid.request(
+            PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+            {
+                //第一次请求【拒绝】后提示用户你为什么要这个权限
+                'title': '我要读写权限',
+                'message': '没权限我不能工作，同意就好了'
+            }
+        );
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('你已获取了读写权限');
+            // 继续运行其它代码
+        } else {
+            console.log('获取读写权限失败');
+        }
     }
 
     render() {
         let navigationBar = <NavigationBar
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
+            rightButton={ViewUtil.getRightShareButton(() => this.generateQRcode())}
             title={'任务详情'}
             style={styles.navigationBar}
         />
@@ -116,11 +191,16 @@ class ItemDetailPage extends React.Component {
                 <View style={styles.container}>
                     {navigationBar}
                     {!lostinfo ? <Text>无详情信息</Text>:
+                        <LinearGradient
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                            colors={['#88d6c0', '#88e7bd']}
+                            style={styles.container}
+                        >
                         <ScrollView style={styles.detailContainer}>
                             <View style={styles.topContainer}>
                                 <View style={{
                                     width: width * 0.9,
-                                    backgroundColor: "#00e0c7",
                                     borderWidth: 1,
                                     borderRadius: 20,
                                     borderColor: "#e8e8e8",
@@ -204,7 +284,7 @@ class ItemDetailPage extends React.Component {
                                             <Text style={styles.title}>其他信息</Text>
                                             <MaterialCommunityIcons name={"message-processing-outline"} size={16}/>
                                         </View>
-                                        <Text style={styles.description}>{lostinfo.lost_appearance}</Text>
+                                        <Text style={[styles.description, {marginRight: 0, marginBottom: 8}]}>{lostinfo.lost_appearance}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -271,18 +351,34 @@ class ItemDetailPage extends React.Component {
                             ) : (
                                 <View style={styles.buttonContainer}>
                                     <View style={{flex:1, marginLeft: 20, marginRight: 10}}>
-                                        <TouchableOpacity style={[styles.button, styles.openButton,  {marginTop: 0,}]} onPress={this.actionConfirm}>
-                                            <Text style={{...styles.textStyle, marginTop: 0,}}>退出</Text>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.openButton,  {marginTop: 0,}]}
+                                            onPress={() => {
+                                                this.actionConfirm();
+                                                this.setState(() => ({
+                                                    showImagePicker: true,
+                                                    showReason: true,
+                                                }))
+                                            }}>
+                                            <Text style={{...styles.textStyle}}>取消</Text>
                                         </TouchableOpacity>
                                     </View>
                                     <View style={{flex:1, marginRight: 20, marginLeft: 10}}>
-                                        <TouchableOpacity style={[styles.button, styles.openButton, {marginTop: 0,}]} onPress={this.actionConfirm}>
+                                        <TouchableOpacity
+                                            style={[styles.button, styles.openButton, {marginTop: 0,}]}
+                                            onPress={() => {
+                                                this.actionConfirm();
+                                                this.setState(() => ({
+                                                    showImagePicker: true,
+                                                }))
+                                            }}>
                                             <Text style={{...styles.textStyle}}>完成</Text>
                                         </TouchableOpacity>
                                     </View>
                                 </View>
                             )}
                         </ScrollView>
+                        </LinearGradient>
                     }
 
                     {/* 确认操作 */}
@@ -291,51 +387,58 @@ class ItemDetailPage extends React.Component {
                         visible={this.state.alertVisible}
                         transparent
                         style={{backgroundColor: "transparent"}}
-
                     >
                         <View style={styles.modalView}>
                             <View style={styles.textContainer}>
                                 <Text style={{fontWeight: "bold"}}>请再次确认操作</Text>
                             </View>
-                            <View style={styles.textCardContainer}>
-                                <TextInput
-                                    style={styles.textInput}
-                                    placeholder={'请输入原因'}
-                                    textAlignVertical={'top'}
-                                />
-                            </View>
-                            <View style={{height: 100}}>
-                                {/* 已上传的图片 */}
-                                {this.state.imageObjs.length ? (
-                                    <FlatList
-                                        style={{width, flexGrow: 0,}}
-                                        contentContainerStyle={{justifyContent: "center"}}
-                                        numColumns={3}
-                                        data={this.state.imageObjs}
-                                        renderItem={(item, index) => {
-                                            return (
-                                                <View style={styles.imageContainer}>
-                                                    <View style={styles.textContainer} >
-                                                        <Image source={{uri: item.item.fileURI}} style={{width: "100%", height: "100%"}}/>
-                                                    </View>
-                                                </View>
-                                            )
-                                        }}
-                                        keyExtractor={(item, index) => index}
-                                    />
-                                ) : null}
+                            {
+                                this.state.showReason ? (
+                                    <View style={styles.textCardContainer}>
+                                        <TextInput
+                                            style={styles.textInput}
+                                            placeholder={'请输入原因'}
+                                            textAlignVertical={'top'}
+                                        />
+                                    </View>
+                                ) : null
+                            }
+                            {
+                                this.state.showImagePicker ? (
+                                        <View style={{height: 100}}>
+                                            {/* 已上传的图片 */}
+                                            {this.state.imageObjs.length ? (
+                                                <FlatList
+                                                    style={{width: 100, flexGrow: 0,}}
+                                                    contentContainerStyle={{justifyContent: "center"}}
+                                                    numColumns={3}
+                                                    data={this.state.imageObjs}
+                                                    renderItem={(item, index) => {
+                                                        return (
+                                                            <View>
+                                                                <View style={styles.textContainer} >
+                                                                    <Image source={{uri: item.item.fileURI}} style={{width: 100, height: 100}}/>
+                                                                </View>
+                                                            </View>
+                                                        )
+                                                    }}
+                                                    keyExtractor={(item, index) => index}
+                                                />
+                                            ) : null}
 
-                                {/* 上传图片按钮 */}
-                                <View style={styles.imageContainer}>
-                                    <TouchableOpacity
-                                        onPress={() => launchImageLibrary(this.options, this.selectPhoto)}
-                                    >
-                                        <View style={styles.textContainer}>
-                                            <Feather name={"image"} style={{fontSize: 80, width: "100%", height: "100%", textAlign: "center"}}/>
+                                            {/* 上传图片按钮 */}
+                                            <View>
+                                                <TouchableOpacity
+                                                    onPress={() => launchImageLibrary(this.options, this.selectPhoto)}
+                                                >
+                                                    <View style={styles.textContainer}>
+                                                        <Feather name={"image"} style={{fontSize: 80, width: "100%", height: "100%", textAlign: "center"}}/>
+                                                    </View>
+                                                </TouchableOpacity>
+                                            </View>
                                         </View>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
+                                    ) : null
+                            }
 
                             <View style={{...styles.buttonContainer, marginVertical: 0}}>
                                 <TouchableOpacity
@@ -355,6 +458,7 @@ class ItemDetailPage extends React.Component {
                                         this.setState((prevState) => ({
                                             alertVisible: false,
                                             successVisible: true,
+                                            showImagePicker: false,
                                         }));
                                         console.log(this.props);
                                         this.props.onAddJoinListItem(data);
@@ -452,6 +556,28 @@ class ItemDetailPage extends React.Component {
                         </View>
                     </Modal>
 
+                    {/* 二维码弹窗 */}
+                    <Modal
+                        popup
+                        maskClosable
+                        visible={this.state.qrcodeVisible}
+                        animationType="slide-up"
+                        title={"分享走失者信息"}
+                        onClose={() => {
+                            this.setState((prevState) => ({
+                                qrcodeVisible: false
+                            }))
+                        }}
+                        style={styles.qrcodeModel}
+                    >
+                        <TouchableOpacity
+                            activeOpacity={1}
+                            style={{ paddingVertical: 20, paddingHorizontal: 20, alignItems: "center"}}
+                            onLongPress={() => this.saveQrToDisk()}
+                        >
+                            <QRCode value={"http://fdchen.host:5000/share?id=4"} getRef={(c) => (this.svg = c)}/>
+                        </TouchableOpacity>
+                    </Modal>
 
                 </View>
             </Provider>
@@ -481,7 +607,6 @@ const styles = StyleSheet.create({
     detailContainer: {
         width: "100%",
         height: "100%",
-        backgroundColor: "#00e0c7",
     },
     topContainer: {
         width,
@@ -621,4 +746,8 @@ const styles = StyleSheet.create({
         marginTop: 10,
         fontSize: 14,
     },
+
+    qrcodeModel:{
+        paddingBottom: 50,
+    }
 });

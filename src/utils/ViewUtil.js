@@ -1,6 +1,7 @@
 import React from 'react';
 import { TouchableOpacity } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 export default class ViewUtil {
     /**
@@ -31,6 +32,21 @@ export default class ViewUtil {
             >
                 <Ionicons
                     name={'add-circle-outline'}
+                    size={26}
+                    style={{color: '#000'}}
+                />
+            </TouchableOpacity>
+        )
+    }
+
+    static getRightShareButton(callback) {
+        return (
+            <TouchableOpacity
+                style={{padding: 8, paddingRight: 12}}
+                onPress={callback}
+            >
+                <AntDesign
+                    name={'qrcode'}
                     size={26}
                     style={{color: '#000'}}
                 />

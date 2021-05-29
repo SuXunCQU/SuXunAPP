@@ -33,33 +33,16 @@ class RecruitTab extends React.Component{
     }
 
     loadData = async () => {
-        console.log(this.props.token);
         if(this.props.token){
             console.log("已有token");
             const response = await reqTasksnIncidents();
-            console.log(response);
-            this.setState({
-                incidents: response.result,
-            })
-        } else{
-            const username = '17815252256';
-            const password = 'asd123';
-            const res = await reqLogin(username, password);
-            // const res = {
-            //     status: 0,
-            //     token: 111
-            // }
-            console.log(res);
-            if (res.status === 0) {
-                this.props.setToken(res.token);
+            if (response.status === 0) {
                 const response = await reqTasksnIncidents();
                 console.log("招募中列表请求成功");
                 console.log(response);
                 this.setState({
                     incidents: response.result,
                 })
-            } else {
-                Toast.showTips("账号或密码不正确");
             }
         }
     }
@@ -94,7 +77,7 @@ class RecruitTab extends React.Component{
             <LinearGradient
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
-                colors={['#00E0C7', '#009394']}
+                colors={['#88d6c0', '#88e7bd']}
                 style={styles.container}
             >
                 <View style={{paddingVertical: 12, backgroundColor: "#ff3333", width: "100%", display: "flex", alignItems: "center"}}><Text style={{color: "#fefefe"}}>有最新救援任务！</Text></View>

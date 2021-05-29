@@ -197,6 +197,9 @@ dependencies {
     compile project(':jmessage-react-plugin') // 极光
     compile project(':jcore-react-native')  // 极光
 
+    compile project(':@react-native-community_cameraroll') // 访问本地相册
+
+
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
 
