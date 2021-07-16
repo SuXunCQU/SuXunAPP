@@ -598,7 +598,7 @@ export default connect(null, mapDispatchToProps)(ItemDetailPage);
 
 const styles = StyleSheet.create({
     container: {
-        height: height,
+        height: "100%",
         justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: "#fefefe",

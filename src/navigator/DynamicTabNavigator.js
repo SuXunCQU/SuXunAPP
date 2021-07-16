@@ -159,13 +159,8 @@ class TabBarComponent extends React.Component {
             {...this.props}
             activeTintColor={this.props.theme}
             style={{
-                borderTopLeftRadius: 15,
-                borderTopRightRadius: 15,
-                borderLeftWidth: 1 / scale,
-                borderRightWidth: 1 / scale,
                 borderColor: "#555",
                 backgroundColor: "#fefefe",
-                position: "absolute",
             }}
         />)
     }
