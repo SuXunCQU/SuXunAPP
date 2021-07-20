@@ -5,10 +5,8 @@ import actions from '../../../redux/action';
 import TaskItem from "../../../components/TaskView/TaskItem";
 import NavigationUtil from '../../../utils/NavigationUtil';
 import LinearGradient from "react-native-linear-gradient";
-import {incident_data} from "../../../utils/mockUtils.new";
-import {reqLogin, reqTask, reqTasksnIncidents} from "../../../api";
-import JPush from "../../../components/jpush/JPush";
-import Toast from "../../../utils/Toast";
+import store from '../../../redux/store';
+import {reqTasksnIncidents} from "../../../api";
 
 const {width, height, scale} = Dimensions.get("window");
 const THEME_COLOR = 'red';
@@ -22,28 +20,12 @@ class RecruitTab extends React.Component{
 
     componentDidMount() {
         this.loadData();
-        // JPush.setLoggerEnable(true);
-        // JPush.init();
-        // JPush.getRegistrationID((result) => console.log(result));
-        // JPush.addLocalNotification({
-        //     "messageID": "2",
-        //     "title": "任务完成",
-        //     "content": `您好，寻找搜寻58岁老人徐海豹的任务已经完成，请各位队员自行返回，注意安全！`,
-        // });
+        console.log(store.getState());
     }
 
-    loadData = async () => {
+    loadData(){
         if(this.props.token){
-            console.log("已有token");
-            const response = await reqTasksnIncidents();
-            if (response.status === 0) {
-                const response = await reqTasksnIncidents();
-                console.log("招募中列表请求成功");
-                console.log(response);
-                this.setState({
-                    incidents: response.result,
-                })
-            }
+            this.props.loadRecruitListData();
         }
     }
 
@@ -61,7 +43,8 @@ class RecruitTab extends React.Component{
 
     render(){
         NavigationUtil.navigation = this.props.navigation;
-        const {incidents, isLoading} = this.state;
+        const {incidents} = this.props;
+        const {isLoading} = this.state;
         let recruitList = {
             items: incidents,
             isLoading
@@ -72,7 +55,6 @@ class RecruitTab extends React.Component{
                 isLoading
             }
         }
-        console.log(recruitList);
         return(
             <LinearGradient
                 start={{ x: 0, y: 0 }}
@@ -104,19 +86,20 @@ class RecruitTab extends React.Component{
 };
 const mapStateToProps = (state) => ({
     token: state.user.token,
+    incidents: state.recruitList.items,
 });
 const mapDispatchToProps = (dispatch) => ({
-    setToken: (token) => dispatch(actions.setToken(token))
+    setToken: (token) => dispatch(actions.setToken(token)),
+    loadRecruitListData: () => dispatch(actions.loadRecruitListData()),
 })
 export default connect(mapStateToProps, mapDispatchToProps)(RecruitTab)
 
 const styles = StyleSheet.create({
     container: {
-        height: height,
+        height: "100%",
         justifyContent: "center",
         alignItems: "center",
         backgroundColor: "#00e0c7",
-        // paddingBottom: 70
     },
     welcome:{
         fontSize: 20,
@@ -129,6 +112,5 @@ const styles = StyleSheet.create({
     list:{
         height: "100%",
         width: "100%",
-        marginBottom: 90,
     }
 });

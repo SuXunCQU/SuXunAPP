@@ -29,7 +29,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Steps from 'react-native-steps';
 import {formateDate} from "../utils/dateUtils";
 import JPush from "./jpush/JPush";
-import {reqQueryTaskMemberByKey} from "../api";
+import {reqQueryTaskMemberByKey, reqAddTaskMember} from "../api";
 import {connect} from "react-redux";
 import actions from "../redux/action";
 import {TextInputLayout} from "rn-textinputlayout";
@@ -63,6 +63,7 @@ const configs = {
 
 const {width, height, scale} = Dimensions.get("window");
 class ItemDetailPage extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
@@ -157,7 +158,6 @@ class ItemDetailPage extends React.Component {
         //     "content": `您好，您附近有新的走失事件发生，走失者信息如下，姓名：徐海豹，性别：男，年龄：58，走失时间：2003/6/23 22:53，走失地点：河北省 衡水市 武强县。请进入“速寻”APP查看任务详情，任务级别：二级。`,
         // });
 
-
         const granted = await PermissionsAndroid.request(
             PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
             {
@@ -174,6 +174,24 @@ class ItemDetailPage extends React.Component {
         }
     }
 
+    onConfirm = (type, data) => {
+        const lostinfo = data.lostinfo;
+        this.setState((prevState) => ({
+            alertVisible: false,
+            successVisible: true,
+            showImagePicker: false,
+        }));
+        console.log(this.props);
+        if(type === "recruit"){
+            this.props.onAddJoinListItem(data);
+            JPush.addLocalNotification({
+                "messageID": "0",
+                "title": "当前加入的最新任务",
+                "content": `${lostinfo.lost_place}${lostinfo.lost_age}岁${lostinfo.lost_name}走失`,
+            });
+        }
+    }
+
     render() {
         let navigationBar = <NavigationBar
             leftButton={ViewUtil.getLeftBackButton(() => this.onBack())}
@@ -182,6 +200,7 @@ class ItemDetailPage extends React.Component {
             style={styles.navigationBar}
         />
 
+        console.log(this.props.navigation);
         const {data, type, photoBase64} = this.props.navigation.state.params;
         const lostinfo = data.lostinfo;
         const lostTimestamp = new Date().getTime(); // 模仿数据中的timestamp
@@ -454,20 +473,7 @@ class ItemDetailPage extends React.Component {
                                 </TouchableOpacity>
                                 <TouchableOpacity
                                     style={{ ...styles.openButton, backgroundColor: "#2196F3", flex: 1 }}
-                                    onPress={() => {
-                                        this.setState((prevState) => ({
-                                            alertVisible: false,
-                                            successVisible: true,
-                                            showImagePicker: false,
-                                        }));
-                                        console.log(this.props);
-                                        this.props.onAddJoinListItem(data);
-                                        JPush.addLocalNotification({
-                                            "messageID": "0",
-                                            "title": "当前加入的最新任务",
-                                            "content": `${lostinfo.lost_place}${lostinfo.lost_age}岁${lostinfo.lost_name}走失`,
-                                        });
-                                    }}
+                                    onPress={() => this.onConfirm(type, data)}
                                 >
                                     <Text style={styles.textStyle}>确认</Text>
                                 </TouchableOpacity>
@@ -598,11 +604,10 @@ export default connect(null, mapDispatchToProps)(ItemDetailPage);
 
 const styles = StyleSheet.create({
     container: {
-        height: "100%",
+        flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: "#fefefe",
-        paddingBottom: 40,
     },
     detailContainer: {
         width: "100%",

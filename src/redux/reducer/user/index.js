@@ -23,6 +23,21 @@ export default function onAction(state = defaultState, action) {
                 ...state,
                 token: action.token
             };
+        case Types.USER_SET_MEMBER_ID:
+            return {
+                ...state,
+                member_id: action.member_id
+            }
+        case Types.USER_SET_MEMBER_PHONE:
+            return {
+                ...state,
+                member_phone: action.member_photo
+            }
+        case Types.USER_SET_MEMBER_PHOTO:
+            return {
+                ...state,
+                member_photo: action.member_photo
+            }
         default:
             return state;
     }

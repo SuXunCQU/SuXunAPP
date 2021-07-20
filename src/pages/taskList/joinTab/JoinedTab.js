@@ -68,6 +68,11 @@ class JoinedTab extends React.Component{
 const mapStateToProps = (state) => ({
     joinedList: state.joinedList,
 });
+
+const mapDispatchToProps = (dispatch) => ({
+
+})
+
 export default connect(mapStateToProps)(JoinedTab)
 
 const styles = StyleSheet.create({

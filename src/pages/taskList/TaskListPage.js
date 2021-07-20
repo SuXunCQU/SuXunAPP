@@ -90,6 +90,6 @@ export default class TaskListPage extends React.Component{
 
 const styles = StyleSheet.create({
     container: {
-        height,
+        height: "100%"
     },
 })

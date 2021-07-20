@@ -123,10 +123,6 @@ class DynamicTabNavigator extends React.Component {
         LogBox.ignoreAllLogs();
     }
 
-    async componentDidMount() {
-
-    }
-
     _tabNavigator() {
         // 性能优化，避免频繁创建导航器，因为用redux改变状态后会触发render函数，就会造成组件重新渲染的情况（如突然跳回首页之类的）
         if (this.Tabs) {

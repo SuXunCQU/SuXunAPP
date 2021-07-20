@@ -4,7 +4,7 @@ import {Button, CheckBox, Icon, Input} from "react-native-elements";
 import {Color, Layout, Size} from "../../../utils/GlobalStyle";
 import {pxToDp, screenHeight} from "../../../utils/styleKits";
 import Toast from "../../../utils/Toast";
-import actions, {setPassword, setToken, setUsername} from "../../../redux/action";
+import actions from "../../../redux/action";
 import {connect} from "react-redux";
 import {reqLogin} from "../../../api";
 
@@ -40,17 +40,13 @@ class Index extends Component {
         console.log("toFindPassword");
     };
 
-    testAPI() {
-        console.log('test', 1);
-    }
-
     /**
      * 提交数据
      */
     submit = async () => {
         // 登录
-        const username = '18386030163';
-        const password = '8bI9O6V0xjY4';
+        const username = '123456789';
+        const password = '123456';
         const res = await reqLogin(username, password);
         // const res = {
         //     status: 0,
@@ -59,11 +55,10 @@ class Index extends Component {
         console.log(res);
         if (res.status === 0) {
             this.props.setUsername(username);
-            this.props.setPassword(password);
             this.props.setToken(res.token);
-            // console.log(this.props.store.getState())
+            this.props.setMemberId(res.member_id);
+            this.props.setMemberPhoto(res.member_photo);
             this.props.navigation.navigate("Main");
-            this.testAPI();
         } else {
             Toast.showTips("账号或密码不正确");
         }
@@ -89,6 +84,7 @@ class Index extends Component {
     };
 
     render() {
+        console.log(this.props);
         const token = this.props.token;
         if(token){
             this.props.navigation.navigate("Main");
@@ -152,7 +148,7 @@ class Index extends Component {
                                 />
                             }
                             onPress={this.submit}
-                            disabled={!(this.state.phoneNumber.length != 0 && this.state.password.length > 1 && this.state.agreementChecked)}
+                            // disabled={!(this.state.phoneNumber.length != 0 && this.state.password.length > 1 && this.state.agreementChecked)}
                         />
                     </View>
                     {/*  2.2 登录按钮 结束 */}
@@ -203,13 +199,12 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     setUsername: (username) => dispatch(actions.setUsername(username)),
-    setPassword: (password) => dispatch(actions.setPassword(password)),
     setToken: (token) => dispatch(actions.setToken(token)),
+    setMemberId: (member_id) => dispatch(actions.setMemberId(member_id)),
+    setMemberPhoto: (member_photo) => dispatch(actions.setMemberPhoto(member_photo)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Index);
-
-// export default Index;
 
 const styles = StyleSheet.create({
     header: {

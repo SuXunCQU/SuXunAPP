@@ -191,26 +191,6 @@ class CurrentTaskHomePage extends React.Component {
         this.locationSubscription();
     }
 
-    _onPressAddCoordinate = () => {
-        this.setState((prevState) => {
-            let lines = JSON.parse(
-                JSON.stringify(prevState.lines)
-            )
-            let size = lines.length;
-            for(let i = 0; i < size; i++){
-                let position_size = lines[i].position.length;
-                let latitude = lines[i].position[position_size - 1].latitude + 0.01;
-                let longitude = lines[i].position[position_size - 1].longitude + 0.01;
-                try{
-                    lines[i].position.push({latitude, longitude});
-                } catch(e){
-                    console.log(e);
-                }
-            }
-            return {lines};
-        })
-    }
-
     _onLocation = (location) => {
         const {latitude, longitude} = location;
         this.setState((prevState) => {
@@ -280,25 +260,23 @@ class CurrentTaskHomePage extends React.Component {
 
 
     render(){
-        const {navigation} = this.props;
+        const {navigation, detailItem} = this.props;
         const {center, marker_polylines} = this.state;
-        // console.log(marker_polylines);
+
+        if(!detailItem){
+            return (
+                <View style={styles.container}>
+                    <Text>请设定当前任务</Text>
+                </View>
+            )
+        }
+
         return(
             <View style={styles.container}>
                 {/*地图*/}
                 <View style={styles.mapContainer}>
-                    {/*<Button*/}
-                    {/*    title={"增加通知"}*/}
-                    {/*    onPress={() => {*/}
-                    {/*        JPush.addLocalNotification({*/}
-                    {/*            "messageID": `${this.messageCount++}`,*/}
-                    {/*            "title": `测试通知${this.messageCount}`,*/}
-                    {/*            "content": `测试内容${this.messageCount}`,*/}
-                    {/*        })*/}
-                    {/*    }}*/}
-                    {/*/>*/}
-                    {/*<WebView source={{uri: "https://m.amap.com/navi/?start=116.403124,39.940693&dest=116.481488,39.990464&destName=阜通西&naviBy=car&key=e42246aad47931d04c21276d03fcaac3"}}/>*/}
-                    {center ? (
+                    {/* TODO 下面的 false 要改回 center */}
+                    {false ? (
                             <MapView
                                 locationEnabled
                                 center={{

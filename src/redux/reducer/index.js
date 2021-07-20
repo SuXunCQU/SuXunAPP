@@ -1,6 +1,7 @@
 import {combineReducers} from 'redux';
 import theme from './theme';
 import joinedList from './joinedList';
+import recruitList from './recruitList';
 import taskItem from './taskItem';
 import user from './user';
 
@@ -10,6 +11,7 @@ import user from './user';
 const index = combineReducers({
     theme,
     joinedList,
+    recruitList,
     taskItem,
     user,
 });

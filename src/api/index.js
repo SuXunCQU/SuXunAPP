@@ -307,17 +307,20 @@ export const reqDeleteMember = (id) => request.delete(`/member/${id}/`);
  * 任务-队员关联
  */
 // 新增任务队员
-export const reqAddTaskMember = (group_id, task_id, member_id) => request.post('/member-task/', {
-    group_id,
+export const reqAddTaskMember = (task_id, member_id) => request.privatePost('/member-task/add_members/', {
     task_id,
     member_id
 });
-
 // 删除任务队员
 export const reqDeleteTaskMember = (task_id, member_id) => request.post('/member-task/delete_member/', {
     task_id,
     member_id
 });
+// 查看已加入任务
+export const reqJoinedTask = (member_id) => request.post('/member/query_attend_task/', {
+    member_id
+});
+
 
 // 退出任务审批
 export const reqExitTaskJudge = (is_agree, task_id, member_id) =>

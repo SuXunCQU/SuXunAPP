@@ -2,7 +2,10 @@ import axios from "axios";
 import Toast from "../utils/Toast";
 import Store from "../redux/store"
 
-const BASE_URI = "http://124.71.226.163"
+// 本地服务器
+const BASE_URI = "http://38621w81b8.wicp.vip";
+// 云服务器
+// const BASE_URI = "http://124.71.226.163";
 
 const instance = axios.create({
     baseURL: BASE_URI,

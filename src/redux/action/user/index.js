@@ -11,3 +11,11 @@ export function setPassword(password) {
 export function setToken(token){
     return {type: Types.USER_SET_TOKEN, token};
 }
+
+export function setMemberId(member_id){
+    return {type: Types.USER_SET_MEMBER_ID, member_id};
+}
+
+export function setMemberPhoto(member_photo){
+    return {type: Types.USER_SET_MEMBER_PHONE, member_photo};
+}

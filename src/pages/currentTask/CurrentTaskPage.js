@@ -22,7 +22,7 @@ class CurrentTaskPage extends React.Component {
                 CurrentTaskHomePage: {
                     screen: CurrentTaskHomePage,
                     navigationOptions: {
-                        title: `当前任务：${this.props.joinedList && this.props.joinedList.item.task_name}`,
+                        title: `当前任务：${this.props.detailItem && this.props.detailItem.task_name}`,
                         headerStyle: GlobalStyle.headerStyle,
                         headerTitleStyle: GlobalStyle.headerTitleStyle,
                     }
