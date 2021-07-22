@@ -27,10 +27,17 @@ class JoinedTab extends React.Component{
         )
     }
 
+    componentDidMount() {
+        console.log("JoinList Mounted");
+        console.log(this.props.user.member_id);
+        this.props.loadJoinedListData(this.props.user.member_id);
+    }
+
     render(){
         NavigationUtil.navigation = this.props.navigation;
         let {joinedList} = this.props;
-        console.log(joinedList);
+        joinedList.isLoading = false;
+        console.log("joinedList: ", joinedList);
         if(!joinedList){
             joinedList = {
                 items: [],
@@ -45,7 +52,7 @@ class JoinedTab extends React.Component{
                 style={styles.container}
             >
                 <FlatList
-                    data={joinedList && [joinedList.item]}
+                    data={joinedList && joinedList.items}
                     renderItem={(data)=>this.renderItem(data)}
                     keyExtractor={(item) => {
                         return item && item.task_id;
@@ -66,14 +73,15 @@ class JoinedTab extends React.Component{
     }
 };
 const mapStateToProps = (state) => ({
+    user: state.user,
     joinedList: state.joinedList,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-
+    loadJoinedListData: (member_id) => dispatch(actions.onLoadJoinedListData(member_id)),
 })
 
-export default connect(mapStateToProps)(JoinedTab)
+export default connect(mapStateToProps, mapDispatchToProps)(JoinedTab)
 
 const styles = StyleSheet.create({
     container: {

@@ -20,27 +20,14 @@ class CluePage extends React.Component{
     }
 
     async componentDidMount() {
-        const clues = await this.loadCluesData();
-        const members = await this.loadMembersData();
+        const task_id = this.props.task_id;
+        const clues = await reqQueryClueByKey(task_id);
+        const members = await reqQueryTaskMemberByKey(task_id);
         console.log(clues);
         console.log(members);
         this.setState({
             clues: clues.result,
             members: members.result,
-        })
-    }
-
-    loadCluesData() {
-        const task_id = 2;
-        return reqQueryClueByKey(task_id).then((response) => {
-            return response;
-        })
-    }
-
-    loadMembersData() {
-        const task_id = 2;
-        return reqQueryTaskMemberByKey(task_id).then((response) => {
-            return response;
         })
     }
 

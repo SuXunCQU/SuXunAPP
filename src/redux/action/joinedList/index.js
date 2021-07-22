@@ -2,18 +2,20 @@ import Types from '../types';
 import DataStore from '../../../expand/dao/DataStore';
 import joinedData from '../../../res/data/data.json';
 import {reqAddTaskMember, reqJoinedTask} from "../../../api";
+import {onSetRecruitListData} from "../recruitList";
 /**
  * 获取已加入任务列表数据的异步action
- * @param storeName
- * @param url
+ * @param member_id
  * @returns {Function}
  */
-export function onLoadJoinedListData(url, pageSize){
+export function onLoadJoinedListData(member_id){
     return async (dispatch) => {
-        const response = await reqJoinedTask();
+        console.log("member_id: ", member_id);
+        const response = await reqJoinedTask(member_id);
         console.log(response);
         if(response.status === 0){
-
+            console.log("已加入列表请求成功");
+            dispatch(onSetJoinListData(response.result));
         }
     }
 

@@ -317,22 +317,22 @@ export const reqDeleteTaskMember = (task_id, member_id) => request.post('/member
     member_id
 });
 // 查看已加入任务
-export const reqJoinedTask = (member_id) => request.post('/member/query_attend_task/', {
+export const reqJoinedTask = (member_id) => request.privatePost('/member/query_attend_task/', {
     member_id
 });
 
 
 // 退出任务审批
 export const reqExitTaskJudge = (is_agree, task_id, member_id) =>
-    request.post('/member-task/exit_judge/', {is_agree, task_id, member_id});
+    request.post('/member_task/exit_judge/', {is_agree, task_id, member_id});
 
 // 关键字检索任务队员
 export const reqQueryTaskMemberByKey = (task_id, name, age, gender, address, is_manager, is_work) =>
-    request.privatePost('/member-task/query_by_key/', {task_id, name, age, gender, address, is_manager, is_work});
+    request.privatePost('/member_task/query_by_taskid/', {task_id, name, age, gender, address, is_manager, is_work});
 
 // 通过id查看任务队员
 export const reqReadTaskMember = (id) =>
-    request.get(`/member-task/${id}/`);
+    request.get(`/member_task/${id}/`);
 
 /**
  * 指令
@@ -346,7 +346,7 @@ export const reqQueryOrderByKey = (task_id) =>
  */
 // 创建暂缓任务申请
 export const reqCreatePauseTask = (task_id, member_id, reason, creat_time) =>
-    request.post('/pause-task/', {task_id, member_id, reason, creat_time});
+    request.post('/pause_task/', {task_id, member_id, reason, creat_time});
 
 // 通过id查看暂缓任务申请
 export const reqReadPauseTask = (id) =>
@@ -402,7 +402,7 @@ export const reqQueryTaskByKey = (start_time, end_time, state, rank) =>
 export const reqTask = () => request.privateGet('/task/')
 
 // 拉取任务——走失者列表
-export const reqTasksnIncidents = () => request.privateGet('/task/moreinfolist')
+export const reqTasksnIncidents = () => request.privateGet('/task/more_info_list')
 
 // 任务分发
 export const reqTaskDispatch = (reporter_place, rank) =>

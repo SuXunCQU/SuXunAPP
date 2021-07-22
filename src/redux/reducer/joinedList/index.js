@@ -13,6 +13,11 @@ const defaultState = {};
  */
 export default function onAction(state=defaultState, action){
     switch(action.type){
+        case Types.JOINEDLIST_SET:
+            return{
+                ...state,
+                items: action.joinList,
+            }
         case Types.JOINEDLIST_REFRESH_SUCCESS:
             return {
                 ...state,

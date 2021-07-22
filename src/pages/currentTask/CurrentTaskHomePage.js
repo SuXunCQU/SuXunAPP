@@ -276,7 +276,7 @@ class CurrentTaskHomePage extends React.Component {
                 {/*地图*/}
                 <View style={styles.mapContainer}>
                     {/* TODO 下面的 false 要改回 center */}
-                    {false ? (
+                    {center ? (
                             <MapView
                                 locationEnabled
                                 center={{

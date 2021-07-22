@@ -49,7 +49,7 @@ class TaskItem extends Component {
     };
 
     async componentDidMount() {
-        const response = await reqPhoto(`${this.props.item.lostinfo.incident_id}.jpg`);
+        const response = await reqPhoto(`${this.props.item.incident_id || this.props.item.incident_id_id}.jpg`);
         this.setState({
             "photoBase64": `data:image/jpg;base64,${response.result}`,
         })

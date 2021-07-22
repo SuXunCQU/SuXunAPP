@@ -24,6 +24,7 @@ class RecruitTab extends React.Component{
     }
 
     loadData(){
+        console.log(this.props.user);
         if(this.props.token){
             this.props.loadRecruitListData();
         }
@@ -31,8 +32,6 @@ class RecruitTab extends React.Component{
 
     renderItem(data){
         const item = data.item;
-        if(data.index === 0 || data.index === 3)
-            return;
         return(
             <TaskItem
                 item={item}
@@ -85,6 +84,7 @@ class RecruitTab extends React.Component{
     }
 };
 const mapStateToProps = (state) => ({
+    user: state.user,
     token: state.user.token,
     incidents: state.recruitList.items,
 });
